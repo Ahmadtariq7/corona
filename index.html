@@ -6,38 +6,13 @@
   <style>
   #map {
     height: 100%;
-  }
-
-  html,
-  body {
+      }
+  html, body {
     height: 100%;
     margin: 0;
     padding: 0;
-  }
+      }
 
-  #floating-panel {
-    position: absolute;
-    top: 10px;
-    left: 25%;
-    z-index: 5;
-    background-color: #fff;
-    padding: 5px;
-    border: 1px solid #999;
-    text-align: center;
-    font-family: 'Roboto', 'sans-serif';
-    line-height: 30px;
-    padding-left: 10px;
-  }
-
-  #floating-panel {
-    background-color: #fff;
-    border: 1px solid #999;
-    left: 25%;
-    padding: 5px;
-    position: absolute;
-    top: 10px;
-    z-index: 5;
-  }
   </style>
 
   <title>COVID-19 - Help & Support</title>
@@ -463,77 +438,61 @@
                     <div id="map"></div>
                   </div>
                   <script>
-                  var map, heatmap;
-                  function initMap() {
-                    map = new google.maps.Map(document.getElementById('map'), {
-                      zoom: 5,
-                      center: {lat: 34.9526, lng:72.3311},
-                    });
-
-                    heatmap = new google.maps.visualization.HeatmapLayer({
-                      data: getPoints(),
-                      map: map
-                    });
-                    var gradient = [
-                      'rgba(0, 255, 255, 0)',
-                      'rgba(0, 255, 255, 1)',
-                      'rgba(0, 191, 255, 1)',
-                      'rgba(0, 127, 255, 1)',
-                      'rgba(0, 63, 255, 1)',
-                      'rgba(0, 0, 255, 1)',
-                      'rgba(0, 0, 223, 1)',
-                      'rgba(0, 0, 191, 1)',
-                      'rgba(0, 0, 159, 1)',
-                      'rgba(0, 0, 127, 1)',
-                      'rgba(63, 0, 91, 1)',
-                      'rgba(127, 0, 63, 1)',
-                      'rgba(191, 0, 31, 1)',
-                      'rgba(255, 0, 0, 1)'
+                    function initMap() {
+                      var map = new google.maps.Map(document.getElementById('map'), {
+                        zoom: 6,
+                        center: {lat: 34.9526, lng:72.3311}
+                      });
+                      var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                      var markers = locations.map(function(location, i) {
+                        return new google.maps.Marker({
+                          position: location,
+                          label: Hospital[i % labels.length]
+                        });
+                      });
+                      // Add a marker clusterer to manage the markers.
+                      var markerCluster = new MarkerClusterer(map, markers,
+                          {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
+                    }
+                    var locations = [
+                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
+                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
+                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
+                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
+                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
+                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
+                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
+                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
+                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
+                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
+                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
+                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
+                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
+                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
+                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
+                      {lat: 34.0130809,lng:71.5555136},<!--Police Hospital-->
+                      {lat: 34.0130809,lng:71.5555136},<!--Police Hospital-->
+                      {lat: 34.0130809,lng:71.5555136},<!--Police Hospital-->
+                      {lat: 34.0130809,lng:71.5555136},<!--Police Hospital-->
+                      {lat: 34.0130809,lng:71.5555136},<!--Police Hospital-->
+                      {lat: 34.0130809,lng:71.5555136},<!--Police Hospital-->
+                      {lat: 34.1469887,lng:72.0356304},<!--MMC HOSPITAL Mardan-->
+                      {lat: 34.1469887,lng:72.0356304},<!--MMC HOSPITAL Mardan-->
+                      {lat: 34.1469887,lng:72.0356304},<!--MMC HOSPITAL Mardan-->
+                      {lat: 34.1469887,lng:72.0356304},<!--MMC HOSPITAL Mardan-->
+                      {lat: 34.1469887,lng:72.0356304},<!--MMC HOSPITAL Mardan-->
+                      {lat: 31.8191332,lng:70.8225261},<!--MMO HOSPITAL DI Khan-->
+                      {lat: 34.1534752,lng:71.7431843}, <!--DHQ Charsadda-->
+                      {lat: 34.1911539,lng:72.0431358},<!--DHQ Mardan-->
+                      {lat: 34.3269282,lng:73.1985739},<!--DHQ Mansehra-->
+                      {lat: 33.9923876,lng:71.4475074},<!--HMC Peshawar-->
                     ]
-                    heatmap.set('gradient', heatmap.get('gradient') ? null : gradient);
-                    heatmap.set('radius', heatmap.get('radius') ? null : 20);
-
-
-                  }
-                  function getPoints() {
-                    return [
-                  new google.maps.LatLng( 31.7890675,70.222832),
-                  new google.maps.LatLng( 31.7890675,70.222832),
-                  new google.maps.LatLng( 31.7890675,70.222832),
-                  new google.maps.LatLng( 31.7890675,70.222832),
-                  new google.maps.LatLng( 31.7890675,70.222832),
-                  new google.maps.LatLng( 31.7890675,70.222832),
-                  new google.maps.LatLng( 31.7890675,70.222832),
-                  new google.maps.LatLng( 31.7890675,70.222832),
-                  new google.maps.LatLng( 31.7890675,70.222832),
-                  new google.maps.LatLng( 31.7890675,70.222832),
-                  new google.maps.LatLng( 31.7890675,70.222832),
-                  new google.maps.LatLng( 31.7890675,70.222832),
-                  new google.maps.LatLng( 31.7890675,70.222832),
-                  new google.maps.LatLng( 31.7890675,70.222832),
-                  new google.maps.LatLng( 31.7890675,70.222832),
-                  new google.maps.LatLng( 34.0130809,71.5555136),
-                  new google.maps.LatLng( 34.0130809,71.5555136),
-                  new google.maps.LatLng( 34.0130809,71.5555136),
-                  new google.maps.LatLng( 34.0130809,71.5555136),
-                  new google.maps.LatLng( 34.0130809,71.5555136),
-                  new google.maps.LatLng( 34.0130809,71.5555136),
-                  new google.maps.LatLng( 34.1469887,72.0356304),
-                  new google.maps.LatLng( 34.1469887,72.0356304),
-                  new google.maps.LatLng( 34.1469887,72.0356304),
-                  new google.maps.LatLng( 34.1469887,72.0356304),
-                  new google.maps.LatLng( 34.1469887,72.0356304),
-                  new google.maps.LatLng( 31.8191332,70.8225261),
-                  new google.maps.LatLng( 34.1534752,71.7431843),
-                  new google.maps.LatLng( 34.1911539,72.0431358),
-                  new google.maps.LatLng( 34.3269282,73.1985739),
-                  new google.maps.LatLng( 33.9923876,71.4475074)
-                    ];
-                  }
                   </script>
-                  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDE2CjseQYhvIbEuJcf2pPU0XUSVIsxcoA&libraries=visualization&callback=initMap">
+                  <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclustererplus@4.0.1.min.js">
                   </script>
-
+                  <script async defer
+                  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDE2CjseQYhvIbEuJcf2pPU0XUSVIsxcoA&libraries=visualization&callback=initMap">
+                  </script>                    <!--Map Ends Here-->
                 </div>
                 <div class="card-pane-right bg-success pt-2 pb-2 pl-4 pr-4">
                   <div style="margin-top: 60px;font-weight:bold;color:#fff;text-align:center;" class="description-block mb-4">
