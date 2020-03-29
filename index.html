@@ -66,219 +66,11 @@
   <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 
 
-  <script type="text/javascript">
-
-    function count(s){
-      var dict = {};
-
-      for (f of s){
-        var i = 0, n = 0, j = 0;
-        while (true) {
-            j = s.indexOf(f, j);
-            if (j >= 0) {
-                n++;
-                j++;
-            } else
-                break;
-        }
-        dict[f] = n;
-      }
-
-      return (dict)
-    }
-
-    function checkRec(x){
-      var count = 0;
-      for (var i = 0 ; i < x.length ; i++){
-        if (typeof x[i] == "string"){
-          if (x[i].toLowerCase().includes("recover")) {
-            count += 1;
-          }
-        }
-      }
-      return count;
-    }
-
-    function checkDeaths(x){
-      var count = 0;
-      for (var i = 0 ; i < x.length ; i++){
-        if (typeof x[i] == "string"){
-          if (x[i].toLowerCase().includes("dead") || x[i].toLowerCase().includes("death")) {
-            count += 1;
-          }
-        }
-      }
-      return count;
-    }
+  <!-- <script type="text/javascript">
 
 
 
-    function checkSuspects(x){
-      var count = 0;
-      for (var i = 0 ; i < x.length ; i++){
-        if (typeof x[i] == "string"){
-          if (x[i].toLowerCase().includes("suspect")) {
-            count += 1;
-          }
-        }
-      }
-      return count;
-    }
-
-    // < !--LINKING FIREBASE-- >
-
-    // Your web app's Firebase configuration
-    var firebaseConfig = {
-      apiKey: "AIzaSyAT-UX-knu2CO18cQ9EgG9YAZ45fvi5s2o",
-      authDomain: "ncai-52e2d.firebaseapp.com",
-      databaseURL: "https://ncai-52e2d.firebaseio.com",
-      projectId: "ncai-52e2d",
-      storageBucket: "ncai-52e2d.appspot.com",
-      messagingSenderId: "324573129426",
-      appId: "1:324573129426:web:f805a8243e35c0b8131b0b",
-      measurementId: "G-J4WDGK2PCY"
-    };
-
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-
-    var names = [];
-    var Cases = [];
-    var outcomes = [];
-    var Hospital = [];
-    var date = [];
-
-    const db = firebase.firestore();
-    // db.settings({ timestampsInSnapshots: true });
-
-    db.collection('patients').get().then((snapshot) => {
-      snapshot.docs.forEach(doc => {
-        try{
-          names.push(doc.data().name);
-          Cases.push(doc.data().caseStatus);
-          outcomes.push(doc.data().outcome);
-          Hospital.push(doc.data().hospital);
-          date.push(doc.data().dateOfTest.toDate().getFullYear().toString() + '/' + (doc.data().dateOfTest.toDate().getMonth() + 1).toString() + '/' + doc.data().dateOfTest.toDate().getDate().toString());
-        }
-        catch{
-          console.log("Error in entry of this patient: " + doc.data().name);
-        }
-      });
-
-
-      var hosCount = count(Hospital);
-
-      var growth = (count(date));
-
-      const dead = (checkDeaths(outcomes));
-
-      const sus = checkSuspects(Cases);
-
-      const conf = names.length - sus;
-
-      var recovered = checkRec(outcomes);
-
-      var total = conf + sus;
-
-      document.getElementById("TOTAL TOP").innerHTML = total;
-      document.getElementById("Quarantined TOP").innerHTML = sus;
-      document.getElementById("Recovered TOP").innerHTML = recovered;
-      document.getElementById("Death TOP").innerHTML = dead;
-      document.getElementById("TOTAL BOTTOM").innerHTML = total;
-      document.getElementById("RECOVERED BOTTOM").innerHTML = recovered;
-      document.getElementById("Confirm BOTTOM").innerHTML = conf;
-      document.getElementById("RECOVERED BOTTOM").innerHTML = recovered;
-      document.getElementById("SUS B").innerHTML = sus;
-      document.getElementById("tmap").innerHTML = total;
-      document.getElementById("smap").innerHTML = sus;
-      document.getElementById("rmap").innerHTML = recovered;
-
-
-      dps = [
-            { label: "Confirmed",  y: conf },
-            { label: "Dead", y: dead },
-            { label: "Suspected", y: sus }
-          ];
-
-      var chart = new CanvasJS.Chart("chartContainer", {
-        animationEnabled: true,
-        axisY:{
-          title:"People Affected",
-        },
-        title:{
-          text: "All KPK"
-        },
-        data: [
-        {
-          // Change type to "doughnut", "line", "splineArea", etc.
-          type: "column",
-          dataPoints: dps,
-          legendText: "{label}",
-          indexLabelFontSize: 16
-        }
-        ]
-      });
-      chart.render();
-
-      dps = [
-            { label: "Confirmed",  y: conf },
-            { label: "Suspected", y: sus },
-            { label: "Dead", y: dead }
-          ];
-
-      var chart2 = new CanvasJS.Chart("chartContainerPie", {
-        theme: "light2", // "light1", "light2", "dark1", "dark2"
-        exportEnabled: true,
-        animationEnabled: true,
-        title: {
-          text: "All KPK"
-        },
-        data: [{
-          type: "pie",
-          // startAngle: 25,
-          toolTipContent: "<b>{label}</b>: {y}",
-          showInLegend: "true",
-          legendText: "{label}",
-          indexLabelFontSize: 16,
-          indexLabel: "{label} - {y}",
-          dataPoints: dps
-        }]
-      });
-      chart2.render();
-
-      dps = [];
-
-      dict = {};
-
-      date = [...new Set(date)];
-
-      for (var i = 0 ; i < date.length ; i++){
-          dps.push({
-            x: new Date (date[i]),
-            y: growth[date[i]]
-          });
-      }
-
-      var chart = new CanvasJS.Chart("chartContainerGrowth", {
-      animationEnabled: true,
-      theme: "light2",
-      title:{
-        text: "KPK Growth Chart"
-      },
-      axisY:{
-        includeZero: false
-      },
-      data: [{
-        type: "splineArea",
-            indexLabelFontSize: 16,
-        dataPoints: dps
-      }]
-    });
-    chart.render();
-
-    })
-
-  </script>
+  </script> -->
 
 </head>
 
@@ -288,11 +80,11 @@
 <header id="header" class="fixed-top header" role="banner">
 	<div class="container">
 		<nav class="navbar navbar-expand-lg navbar-dark">
+      <img src="img/corona1.png" class="img-fluid" style="float:left;width: 150px; padding-top:15px;padding-bottom:15px;align:left;" />
 			<button class="navbar-toggler ml-auto border-0 rounded-0 text-white" type="button" data-toggle="collapse"
 				data-target="#navigation" aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="fa fa-bars"></span>
 			</button>
-      <img src="img/corona1.png" class="img-fluid float-right" style="width: 150px; padding-top:15px;padding-bottom:15px;align:left;" />
 			<div class="collapse navbar-collapse text-center" id="navigation">
 				<ul class="navbar-nav ml-auto">
           <a class="nav-link active" href="#">Home</a>
@@ -309,10 +101,10 @@
 			<li class="selected">
 				<div class="overlay2">
           <a href=""></a>
-					<img class="" src="img/header.jpg" alt="Health photo created by freepik - www.freepik.com">
+					<img class="" style="padding-top:80px;width:100%;height: auto;" src="img/header.jpg" alt="Health photo created by freepik - www.freepik.com">
 				</div>
 				<div class="cd-full-width">
-					<h2>COVID-19</h2>
+					<h2 style="padding-top:55px;"  >COVID-19</h2>
 					<h3>help & support menu</h3>
 					<a href="tel:1700" class="btn btn-primary white cd-btn">Get Help</a>
 					<a href="#portfolio" class="btn btn-primary solid cd-btn">Learn More</a>
@@ -369,7 +161,7 @@
               <h3 class="card-title">Cases</h3>
             </div>
             <div class="card-body">
-              <div id="chartContainer" style="height: 300px; width: 100%;"></div>
+              <div id="chartContainer" style="padding: 10px 10px 20px 20px;height: 300px; width: 90%;"></div>
             </div>
           </div>
         </div>
@@ -379,7 +171,7 @@
               <h3 class="card-title">Deaths</h3>
             </div>
             <div class="card-body">
-              <div id="chartContainerPie" style="height: 300px; width: 100%;"></div>
+              <div id="chartContainerPie" style="padding: 10px 10px 20px 20px;height: 300px; width: 90%;"></div>
             </div>
           </div>
         </div>
@@ -438,55 +230,248 @@
                     <div id="map"></div>
                   </div>
                   <script>
-                    function initMap() {
-                      var map = new google.maps.Map(document.getElementById('map'), {
-                        zoom: 6,
-                        center: {lat: 34.9526, lng:72.3311}
-                      });
-                      var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-                      var markers = locations.map(function(location, i) {
-                        return new google.maps.Marker({
-                          position: location,
-                          label: Hospital[i % labels.length]
+
+                    var latat = [];
+
+                    function count(s) {
+                        var dict = {};
+
+                        for (f of s) {
+                          var i = 0, n = 0, j = 0;
+                          while (true) {
+                            j = s.indexOf(f, j);
+                            if (j >= 0) {
+                              n++;
+                              j++;
+                            } else
+                              break;
+                          }
+                          dict[f] = n;
+                        }
+
+                        return (dict)
+                      }
+
+                      function checkRec(x) {
+                        var count = 0;
+                        for (var i = 0; i < x.length; i++) {
+                          if (typeof x[i] == "string") {
+                            if (x[i].toLowerCase().includes("recover")) {
+                              count += 1;
+                            }
+                          }
+                        }
+                        return count;
+                      }
+
+                      function checkDeaths(x) {
+                        var count = 0;
+                        for (var i = 0; i < x.length; i++) {
+                          if (typeof x[i] == "string") {
+                            if (x[i].toLowerCase().includes("dead") || x[i].toLowerCase().includes("death")) {
+                              count += 1;
+                            }
+                          }
+                        }
+                        return count;
+                      }
+
+
+
+                      function checkSuspects(x) {
+                        var count = 0;
+                        for (var i = 0; i < x.length; i++) {
+                          if (typeof x[i] == "string") {
+                            if (x[i].toLowerCase().includes("suspect")) {
+                              count += 1;
+                            }
+                          }
+                        }
+                        return count;
+                      }
+
+                      // < !--LINKING FIREBASE-- >
+
+                      // Your web app's Firebase configuration
+                      var firebaseConfig = {
+                        apiKey: "AIzaSyAT-UX-knu2CO18cQ9EgG9YAZ45fvi5s2o",
+                        authDomain: "ncai-52e2d.firebaseapp.com",
+                        databaseURL: "https://ncai-52e2d.firebaseio.com",
+                        projectId: "ncai-52e2d",
+                        storageBucket: "ncai-52e2d.appspot.com",
+                        messagingSenderId: "324573129426",
+                        appId: "1:324573129426:web:f805a8243e35c0b8131b0b",
+                        measurementId: "G-J4WDGK2PCY"
+                      };
+
+                      // Initialize Firebase
+                      firebase.initializeApp(firebaseConfig);
+
+                      var names = [];
+                      var Cases = [];
+                      var outcomes = [];
+                      var Hospital = [];
+                      var date = [];
+
+                      const db = firebase.firestore();
+                      // db.settings({ timestampsInSnapshots: true });
+
+                      var lat = [];
+                      var long = [];
+
+                      db.collection('patients').get().then((snapshot) => {
+                        snapshot.docs.forEach(doc => {
+                          try {
+                            names.push(doc.data().name);
+                            Cases.push(doc.data().caseStatus);
+                            outcomes.push(doc.data().outcome);
+                            Hospital.push(doc.data().hospital);
+                            date.push(doc.data().dateOfTest.toDate().getFullYear().toString() + '/' + (doc.data().dateOfTest.toDate().getMonth() + 1).toString() + '/' + doc.data().dateOfTest.toDate().getDate().toString());
+                            lat.push(doc.data().location['F']);
+                            long.push(doc.data().location['V']);
+                          }
+                          catch{
+                            console.log("Error in entry of this patient: " + doc.data().name);
+                          }
                         });
-                      });
-                      // Add a marker clusterer to manage the markers.
-                      var markerCluster = new MarkerClusterer(map, markers,
-                          {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
-                    }
-                    var locations = [
-                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
-                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
-                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
-                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
-                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
-                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
-                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
-                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
-                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
-                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
-                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
-                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
-                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
-                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
-                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
-                      {lat: 34.0130809,lng:71.5555136},<!--Police Hospital-->
-                      {lat: 34.0130809,lng:71.5555136},<!--Police Hospital-->
-                      {lat: 34.0130809,lng:71.5555136},<!--Police Hospital-->
-                      {lat: 34.0130809,lng:71.5555136},<!--Police Hospital-->
-                      {lat: 34.0130809,lng:71.5555136},<!--Police Hospital-->
-                      {lat: 34.0130809,lng:71.5555136},<!--Police Hospital-->
-                      {lat: 34.1469887,lng:72.0356304},<!--MMC HOSPITAL Mardan-->
-                      {lat: 34.1469887,lng:72.0356304},<!--MMC HOSPITAL Mardan-->
-                      {lat: 34.1469887,lng:72.0356304},<!--MMC HOSPITAL Mardan-->
-                      {lat: 34.1469887,lng:72.0356304},<!--MMC HOSPITAL Mardan-->
-                      {lat: 34.1469887,lng:72.0356304},<!--MMC HOSPITAL Mardan-->
-                      {lat: 31.8191332,lng:70.8225261},<!--MMO HOSPITAL DI Khan-->
-                      {lat: 34.1534752,lng:71.7431843}, <!--DHQ Charsadda-->
-                      {lat: 34.1911539,lng:72.0431358},<!--DHQ Mardan-->
-                      {lat: 34.3269282,lng:73.1985739},<!--DHQ Mansehra-->
-                      {lat: 33.9923876,lng:71.4475074},<!--HMC Peshawar-->
-                    ]
+
+
+                        dic = {};
+
+                        for (var i = 0; i < lat.length; i++) {
+                          dic['lat'] = lat[i];
+                          dic['lng'] = long[i];
+                          window.latat.push(dic);
+                        }
+
+                        var hosCount = count(Hospital);
+
+                        var growth = (count(date));
+
+                        const dead = (checkDeaths(outcomes));
+
+                        const sus = checkSuspects(Cases);
+
+                        const conf = names.length - sus;
+
+                        var recovered = checkRec(outcomes);
+
+                        var total = conf + sus;
+
+                        document.getElementById("TOTAL TOP").innerHTML = total;
+                        document.getElementById("Quarantined TOP").innerHTML = sus;
+                        document.getElementById("Recovered TOP").innerHTML = recovered;
+                        document.getElementById("Death TOP").innerHTML = dead;
+                        document.getElementById("TOTAL BOTTOM").innerHTML = total;
+                        document.getElementById("RECOVERED BOTTOM").innerHTML = recovered;
+                        document.getElementById("Confirm BOTTOM").innerHTML = conf;
+                        document.getElementById("RECOVERED BOTTOM").innerHTML = recovered;
+                        document.getElementById("SUS B").innerHTML = sus;
+                        document.getElementById("tmap").innerHTML = total;
+                        document.getElementById("smap").innerHTML = sus;
+                        document.getElementById("rmap").innerHTML = recovered;
+
+
+                        dps = [
+                          { label: "Confirmed", y: conf },
+                          { label: "Dead", y: dead },
+                          { label: "Suspected", y: sus }
+                        ];
+
+                        var chart = new CanvasJS.Chart("chartContainer", {
+                          animationEnabled: true,
+                          axisY: {
+                            title: "People Affected",
+                          },
+                          title: {
+                            text: "All KPK"
+                          },
+                          data: [
+                            {
+                              // Change type to "doughnut", "line", "splineArea", etc.
+                              type: "column",
+                              dataPoints: dps,
+                              legendText: "{label}",
+                              indexLabelFontSize: 16
+                            }
+                          ]
+                        });
+                        chart.render();
+
+                        dps = [
+                          { label: "Confirmed", y: conf },
+                          { label: "Suspected", y: sus },
+                          { label: "Dead", y: dead }
+                        ];
+
+                        var chart2 = new CanvasJS.Chart("chartContainerPie", {
+                          theme: "light2", // "light1", "light2", "dark1", "dark2"
+                          exportEnabled: true,
+                          animationEnabled: true,
+                          title: {
+                            text: "All KPK"
+                          },
+                          data: [{
+                            type: "pie",
+                            // startAngle: 25,
+                            toolTipContent: "<b>{label}</b>: {y}",
+                            showInLegend: "true",
+                            legendText: "{label}",
+                            indexLabelFontSize: 16,
+                            indexLabel: "{label} - {y}",
+                            dataPoints: dps
+                          }]
+                        });
+                        chart2.render();
+
+                        dps = [];
+
+                        dict = {};
+
+                        date = [...new Set(date)];
+
+                        for (var i = 0; i < date.length; i++) {
+                          dps.push({
+                            x: new Date(date[i]),
+                            y: growth[date[i]]
+                          });
+                        }
+
+                        var chart = new CanvasJS.Chart("chartContainerGrowth", {
+                          animationEnabled: true,
+                          theme: "light2",
+                          title: {
+                            text: "KPK Growth Chart"
+                          },
+                          axisY: {
+                            includeZero: false
+                          },
+                          data: [{
+                            type: "splineArea",
+                            indexLabelFontSize: 16,
+                            dataPoints: dps
+                          }]
+                        });
+                        chart.render();
+                        if (latat != null) {
+                          var map = new google.maps.Map(document.getElementById('map'), {
+                            zoom: 6,
+                            center: { lat: 31.7890675, lng: 70.222832 }
+                          });
+                          for (loc of latat) {
+                            var marker = new google.maps.Marker({ position: loc, map: map });
+                          }
+                          var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                          var markers = latat.map(function (location, i) {
+                            return new google.maps.Marker({
+                              position: location,
+                              label: Hospital[i % labels.length]
+                            });
+                          });
+                          var markerCluster = new MarkerClusterer(map, markers,
+                            { imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m' });
+                        }
+                      })
                   </script>
                   <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclustererplus@4.0.1.min.js">
                   </script>
