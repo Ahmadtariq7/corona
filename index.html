@@ -1,1375 +1,786 @@
 <!DOCTYPE html>
-<html>
+<html lang="zxx">
+
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>AdminLTE 3 | Dashboard</title>
-  <!-- Tell the browser to be responsive to screen width -->
+  <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 100%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+
+  <title>COVID-19 - Help & Support</title>
+
+  <!-- mobile responsive meta -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
-  <!-- Ionicons -->
-  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-  <!-- Tempusdominus Bbootstrap 4 -->
-  <link rel="stylesheet" href="plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
-  <!-- iCheck -->
-  <link rel="stylesheet" href="plugins/icheck-bootstrap/icheck-bootstrap.min.css">
-  <!-- JQVMap -->
-  <link rel="stylesheet" href="plugins/jqvmap/jqvmap.min.css">
-  <!-- Theme style -->
-  <link rel="stylesheet" href="dist/css/adminlte.min.css">
-  <!-- overlayScrollbars -->
-  <link rel="stylesheet" href="plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
-  <!-- Daterange picker -->
-  <link rel="stylesheet" href="plugins/daterangepicker/daterangepicker.css">
-  <!-- summernote -->
-  <link rel="stylesheet" href="plugins/summernote/summernote-bs4.css">
-  <!-- Google Font: Source Sans Pro -->
-  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <!-- ** Plugins Needed for the Project ** -->
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="plugins/bootstrap/bootstrap.min.css">
+	<!-- FontAwesome -->
+  <link rel="stylesheet" href="plugins/fontawesome/font-awesome.min.css">
+	<!-- Animation -->
+	<link rel="stylesheet" href="plugins/animate.css">
+	<!-- Prettyphoto -->
+	<link rel="stylesheet" href="plugins/prettyPhoto.css">
+	<!-- Owl Carousel -->
+	<link rel="stylesheet" href="plugins/owl/owl.carousel.css">
+	<link rel="stylesheet" href="plugins/owl/owl.theme.css">
+	<!-- Flexslider -->
+	<link rel="stylesheet" href="plugins/flex-slider/flexslider.css">
+	<!-- Flexslider -->
+	<link rel="stylesheet" href="plugins/cd-hero/cd-hero.css">
+	<!-- Style Swicther -->
+	<link href="css/colorscheme.css" media="screen" rel="stylesheet" type="text/css">
+
+	<!-- HTML5 shim, for IE6-8 support of HTML5 elements. All other JS at the end of file. -->
+    <!--[if lt IE 9]>
+      <script src="plugins/html5shiv.js"></script>
+      <script src="plugins/respond.min.js"></script>
+    <![endif]-->
+
+  <!-- Main Stylesheet -->
+  <link href="css/style.css" rel="stylesheet">
+
+  <!--Favicon-->
+	<link rel="icon" href="img/fav.png" type="fav-icon" />
+	<link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/favicon/favicon-144x144.png">
+	<link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/favicon/favicon-72x72.png">
+	<link rel="apple-touch-icon-precomposed" href="img/favicon/favicon-54x54.png">
+  <!-- LINKING FIREBASE-->
+
+  <!-- Firebase scripts-->
+<script src="https://www.gstatic.com/firebasejs/7.12.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.12.0/firebase-analytics.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.12.0/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.12.0/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.12.0/firebase-auth.js"></script>
+
+  <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+
+
+  <script type="text/javascript">
+
+    function count(s){
+      var dict = {};
+
+      for (f of s){
+        var i = 0, n = 0, j = 0;
+        while (true) {
+            j = s.indexOf(f, j);
+            if (j >= 0) {
+                n++;
+                j++;
+            } else
+                break;
+        }
+        dict[f] = n;
+      }
+
+      return (dict)
+    }
+
+    function checkRec(x){
+      var count = 0;
+      for (var i = 0 ; i < x.length ; i++){
+        if (typeof x[i] == "string"){
+          if (x[i].toLowerCase().includes("recover")) {
+            count += 1;
+          }
+        }
+      }
+      return count;
+    }
+
+    function checkDeaths(x){
+      var count = 0;
+      for (var i = 0 ; i < x.length ; i++){
+        if (typeof x[i] == "string"){
+          if (x[i].toLowerCase().includes("dead") || x[i].toLowerCase().includes("death")) {
+            count += 1;
+          }
+        }
+      }
+      return count;
+    }
+
+
+
+    function checkSuspects(x){
+      var count = 0;
+      for (var i = 0 ; i < x.length ; i++){
+        if (typeof x[i] == "string"){
+          if (x[i].toLowerCase().includes("suspect")) {
+            count += 1;
+          }
+        }
+      }
+      return count;
+    }
+
+    // < !--LINKING FIREBASE-- >
+
+    // Your web app's Firebase configuration
+    var firebaseConfig = {
+      apiKey: "AIzaSyAT-UX-knu2CO18cQ9EgG9YAZ45fvi5s2o",
+      authDomain: "ncai-52e2d.firebaseapp.com",
+      databaseURL: "https://ncai-52e2d.firebaseio.com",
+      projectId: "ncai-52e2d",
+      storageBucket: "ncai-52e2d.appspot.com",
+      messagingSenderId: "324573129426",
+      appId: "1:324573129426:web:f805a8243e35c0b8131b0b",
+      measurementId: "G-J4WDGK2PCY"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+
+    var names = [];
+    var Cases = [];
+    var outcomes = [];
+    var Hospital = [];
+    var date = [];
+
+    const db = firebase.firestore();
+    // db.settings({ timestampsInSnapshots: true });
+
+    db.collection('patients').get().then((snapshot) => {
+      snapshot.docs.forEach(doc => {
+        try{
+          names.push(doc.data().name);
+          Cases.push(doc.data().caseStatus);
+          outcomes.push(doc.data().outcome);
+          Hospital.push(doc.data().hospital);
+          date.push(doc.data().dateOfTest.toDate().getFullYear().toString() + '/' + (doc.data().dateOfTest.toDate().getMonth() + 1).toString() + '/' + doc.data().dateOfTest.toDate().getDate().toString());
+        }
+        catch{
+          console.log("Error in entry of this patient: " + doc.data().name);
+        }
+      });
+
+
+      var hosCount = count(Hospital);
+
+      var growth = (count(date));
+
+      const dead = (checkDeaths(outcomes));
+
+      const sus = checkSuspects(Cases);
+
+      const conf = names.length - sus;
+
+      var recovered = checkRec(outcomes);
+
+      var total = conf + sus;
+
+      document.getElementById("TOTAL TOP").innerHTML = total;
+      document.getElementById("Quarantined TOP").innerHTML = sus;
+      document.getElementById("Recovered TOP").innerHTML = recovered;
+      document.getElementById("Death TOP").innerHTML = dead;
+      document.getElementById("TOTAL BOTTOM").innerHTML = total;
+      document.getElementById("RECOVERED BOTTOM").innerHTML = recovered;
+      document.getElementById("Confirm BOTTOM").innerHTML = conf;
+      document.getElementById("RECOVERED BOTTOM").innerHTML = recovered;
+      document.getElementById("SUS B").innerHTML = sus;
+      document.getElementById("tmap").innerHTML = total;
+      document.getElementById("smap").innerHTML = sus;
+      document.getElementById("rmap").innerHTML = recovered;
+
+
+      dps = [
+            { label: "Confirmed",  y: conf },
+            { label: "Dead", y: dead },
+            { label: "Suspected", y: sus }
+          ];
+
+      var chart = new CanvasJS.Chart("chartContainer", {
+        animationEnabled: true,
+        axisY:{
+          title:"People Affected",
+        },
+        title:{
+          text: "All KPK"
+        },
+        data: [
+        {
+          // Change type to "doughnut", "line", "splineArea", etc.
+          type: "column",
+          dataPoints: dps,
+          legendText: "{label}",
+          indexLabelFontSize: 16
+        }
+        ]
+      });
+      chart.render();
+
+      dps = [
+            { label: "Confirmed",  y: conf },
+            { label: "Suspected", y: sus },
+            { label: "Dead", y: dead }
+          ];
+
+      var chart2 = new CanvasJS.Chart("chartContainerPie", {
+        theme: "light2", // "light1", "light2", "dark1", "dark2"
+        exportEnabled: true,
+        animationEnabled: true,
+        title: {
+          text: "All KPK"
+        },
+        data: [{
+          type: "pie",
+          // startAngle: 25,
+          toolTipContent: "<b>{label}</b>: {y}",
+          showInLegend: "true",
+          legendText: "{label}",
+          indexLabelFontSize: 16,
+          indexLabel: "{label} - {y}",
+          dataPoints: dps
+        }]
+      });
+      chart2.render();
+
+      dps = [];
+
+      dict = {};
+
+      date = [...new Set(date)];
+
+      for (var i = 0 ; i < date.length ; i++){
+          dps.push({
+            x: new Date (date[i]),
+            y: growth[date[i]]
+          });
+      }
+
+      var chart = new CanvasJS.Chart("chartContainerGrowth", {
+      animationEnabled: true,
+      theme: "light2",
+      title:{
+        text: "KPK Growth Chart"
+      },
+      axisY:{
+        includeZero: false
+      },
+      data: [{
+        type: "splineArea",
+            indexLabelFontSize: 16,
+        dataPoints: dps
+      }]
+    });
+    chart.render();
+
+    })
+
+  </script>
+
 </head>
-<body class="hold-transition sidebar-mini layout-fixed">
-<div class="wrapper">
 
-  <!-- Navbar -->
-  <nav class="main-header navbar navbar-expand navbar-white navbar-light">
-    <!-- Left navbar links -->
-    <ul class="navbar-nav">
-      <li class="nav-item">
-        <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
-      </li>
-      <li class="nav-item d-none d-sm-inline-block">
-        <a href="index3.html" class="nav-link">Home</a>
-      </li>
-      <li class="nav-item d-none d-sm-inline-block">
-        <a href="#" class="nav-link">Contact</a>
-      </li>
-    </ul>
+<body>
 
-    <!-- SEARCH FORM -->
-    <form class="form-inline ml-3">
-      <div class="input-group input-group-sm">
-        <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
-        <div class="input-group-append">
-          <button class="btn btn-navbar" type="submit">
-            <i class="fas fa-search"></i>
-          </button>
+	<!-- Style switcher start -->
+	<!-- <div class="style-switch-wrapper">
+		<div class="style-switch-button">
+			<i class="fa fa-sliders"></i>
+		</div>
+		<h3>Style Options</h3>
+		<button id="preset2" class="btn btn-sm btn-primary"></button>
+		<br/><br/>
+		<a class="btn btn-sm btn-primary close-styler float-right">Close X</a>
+	</div> -->
+	<!-- Style switcher end -->
+
+	<div class="body-inner">
+
+<!-- Header start -->
+<header id="header" class="fixed-top header" role="banner">
+	<!-- <a class="navbar-brand" href="index.html"><img class="img-fluid float-right" src="images/logo.png" alt="logo"></a> -->
+	<div class="container">
+		<nav class="navbar navbar-expand-lg navbar-dark">
+			<button class="navbar-toggler ml-auto border-0 rounded-0 text-white" type="button" data-toggle="collapse"
+				data-target="#navigation" aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="fa fa-bars"></span>
+			</button>
+      <img src="img/corona1.png" style="width: 150px; padding-top:15px;padding-bottom:15px;align:left;" />
+
+			<div class="collapse navbar-collapse text-center" id="navigation">
+				<ul class="navbar-nav ml-auto">
+          <a class="nav-link active" href="#">Home</a>
+          <a class="nav-link" href="#image-block">Learn More</a></a>
+          <a class="nav-link" href="#main-container">FAQ's</a></a>
+
+				</ul>
+			</div>
+		</nav>
+	</div>
+</header>
+<!--/ Header end -->
+
+<!-- Slider start -->
+<section id="home" class="p-0">
+	<div id="main-slide" class="cd-hero">
+		<ul class="cd-hero-slider">
+			<li class="selected">
+				<div class="overlay2">
+          <a href=""></a>
+					<img class="" src="img/header.jpg" alt="Health photo created by freepik - www.freepik.com">
+				</div>
+				<div class="cd-full-width">
+					<h2>COVID-19</h2>
+					<h3>help & support menu</h3>
+					<a href="tel:1700" class="btn btn-primary white cd-btn">Get Help</a>
+					<a href="#portfolio" class="btn btn-primary solid cd-btn">Learn More</a>
+				</div>
+			</li>
+
+		</ul>
+
+	</div>
+</section>
+
+<!-- Counter Strat -->
+<section class="ts_counter p-0">
+	<div class="container-fluid">
+		<div class="row facts-wrapper wow fadeInLeft text-center">
+			<div class="facts one col-md-3 col-sm-6">
+				<span class="facts-icon"><i class="fa fa-user"></i></span>
+				<div class="facts-num">
+					<span id="TOTAL TOP"></span>
+				</div>
+				<h3>Total Cases</h3>
+			</div>
+
+			<div class="facts two col-md-3 col-sm-6">
+				<span class="facts-icon"><i class="fa fa-bars"></i></span>
+				<div class="facts-num">
+					<span id="Quarantined TOP"></span>
+				</div>
+				<h3>Quarantined</h3>
+			</div>
+
+			<div class="facts three col-md-3 col-sm-6">
+				<span class="facts-icon"><i class="fa fa-heart"></i></span>
+				<div class="facts-num">
+					<span id="Recovered TOP"></span>
+				</div>
+				<h3>Recovered</h3>
+			</div>
+
+			<div class="facts four col-md-3 col-sm-6">
+				<span class="facts-icon"><i class="fa fa-asterisk"></i></span>
+				<div class="facts-num">
+					<span id="Death TOP"></span>
+				</div>
+				<h3>Deaths</h3>
+			</div>
+
+		</div>
+	</div>
+	<!--/ Container end -->
+</section>
+<!--/ Counter end -->
+
+<!-- Service box start -->
+
+<!-- Portfolio start -->
+<section id="portfolio" class="portfolio">
+	<div class="container">
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="card card-primary">
+            <div class="card-header">
+              <h3 class="card-title">Cases</h3>
+            </div>
+            <div class="card-body">
+              <div id="chartContainer" style="height: 300px; width: 100%;"></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="card card-danger">
+            <div class="card-header">
+              <h3 class="card-title">Deaths</h3>
+            </div>
+            <div class="card-body">
+              <div id="chartContainerPie" style="height: 300px; width: 100%;"></div>
+            </div>
+          </div>
         </div>
       </div>
-    </form>
-
-    <!-- Right navbar links -->
-    <ul class="navbar-nav ml-auto">
-      <!-- Messages Dropdown Menu -->
-      <li class="nav-item dropdown">
-        <a class="nav-link" data-toggle="dropdown" href="#">
-          <i class="far fa-comments"></i>
-          <span class="badge badge-danger navbar-badge">3</span>
-        </a>
-        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-          <a href="#" class="dropdown-item">
-            <!-- Message Start -->
-            <div class="media">
-              <img src="dist/img/user1-128x128.jpg" alt="User Avatar" class="img-size-50 mr-3 img-circle">
-              <div class="media-body">
-                <h3 class="dropdown-item-title">
-                  Brad Diesel
-                  <span class="float-right text-sm text-danger"><i class="fas fa-star"></i></span>
-                </h3>
-                <p class="text-sm">Call me whenever you can...</p>
-                <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card card-warning">
+            <div class="card-header">
+              <h5 class="card-title">Reports Till Date</h5>
+            </div>
+            <div class="card-body">
+              <div id="chartContainerGrowth" style="height: 300px; width: 100%;"></div>
+            </div>
+          </div>
+          <div class="card-footer">
+              <div class="row">
+                <div class="col-sm-3 col-6">
+                  <div style="color:black;text-align:center;" class="description-block border-right">
+                    <h5 class="description-header" id="TOTAL BOTTOM"></h5>
+                    <span class="description-text">TOTAL PATIENTS</span>
+                  </div>
+                </div>
+                <div class="col-sm-3 col-6">
+                  <div style="color:black;text-align:center;" class="description-block border-right">
+                    <h5 class="description-header" id="Confirm BOTTOM"></h5>
+                    <span class="description-text">CORONA POSITIVE</span>
+                  </div>
+                </div>
+                <div class="col-sm-3 col-6">
+                  <div style="color:black;text-align:center;" class="description-block border-right">
+                    <h5 class="description-header" id="SUS B"></h5>
+                    <span class="description-text">SUSPECTED</span>
+                  </div>
+                </div>
+                <div class="col-sm-3 col-6">
+                  <div style="color:black;text-align:center;" class="description-block">
+                    <h5 class="description-header" id="RECOVERED BOTTOM"></h5>
+                    <span class="description-text">RECOVERED</span>
+                  </div>
+                </div>
               </div>
             </div>
-            <!-- Message End -->
-          </a>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item">
-            <!-- Message Start -->
-            <div class="media">
-              <img src="dist/img/user8-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
-              <div class="media-body">
-                <h3 class="dropdown-item-title">
-                  John Pierce
-                  <span class="float-right text-sm text-muted"><i class="fas fa-star"></i></span>
-                </h3>
-                <p class="text-sm">I got your message bro</p>
-                <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
-              </div>
-            </div>
-            <!-- Message End -->
-          </a>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item">
-            <!-- Message Start -->
-            <div class="media">
-              <img src="dist/img/user3-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
-              <div class="media-body">
-                <h3 class="dropdown-item-title">
-                  Nora Silvester
-                  <span class="float-right text-sm text-warning"><i class="fas fa-star"></i></span>
-                </h3>
-                <p class="text-sm">The subject goes here</p>
-                <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
-              </div>
-            </div>
-            <!-- Message End -->
-          </a>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
-        </div>
-      </li>
-      <!-- Notifications Dropdown Menu -->
-      <li class="nav-item dropdown">
-        <a class="nav-link" data-toggle="dropdown" href="#">
-          <i class="far fa-bell"></i>
-          <span class="badge badge-warning navbar-badge">15</span>
-        </a>
-        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-          <span class="dropdown-item dropdown-header">15 Notifications</span>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item">
-            <i class="fas fa-envelope mr-2"></i> 4 new messages
-            <span class="float-right text-muted text-sm">3 mins</span>
-          </a>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item">
-            <i class="fas fa-users mr-2"></i> 8 friend requests
-            <span class="float-right text-muted text-sm">12 hours</span>
-          </a>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item">
-            <i class="fas fa-file mr-2"></i> 3 new reports
-            <span class="float-right text-muted text-sm">2 days</span>
-          </a>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
-        </div>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">
-          <i class="fas fa-th-large"></i>
-        </a>
-      </li>
-    </ul>
-  </nav>
-  <!-- /.navbar -->
-
-  <!-- Main Sidebar Container -->
-  <aside class="main-sidebar sidebar-dark-primary elevation-4">
-    <!-- Brand Logo -->
-    <a href="index3.html" class="brand-link">
-      <img src="dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
-           style="opacity: .8">
-      <span class="brand-text font-weight-light">AdminLTE 3</span>
-    </a>
-
-    <!-- Sidebar -->
-    <div class="sidebar">
-      <!-- Sidebar user panel (optional) -->
-      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-        <div class="image">
-          <img src="dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
-        </div>
-        <div class="info">
-          <a href="#" class="d-block">Alexander Pierce</a>
         </div>
       </div>
 
-      <!-- Sidebar Menu -->
-      <nav class="mt-2">
-        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-          <!-- Add icons to the links using the .nav-icon class
-               with font-awesome or any other icon font library -->
-          <li class="nav-item has-treeview menu-open">
-            <a href="#" class="nav-link active">
-              <i class="nav-icon fas fa-tachometer-alt"></i>
-              <p>
-                Dashboard
-                <i class="right fas fa-angle-left"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="./index.html" class="nav-link active">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Dashboard v1</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="./index2.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Dashboard v2</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="./index3.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Dashboard v3</p>
-                </a>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-item">
-            <a href="pages/widgets.html" class="nav-link">
-              <i class="nav-icon fas fa-th"></i>
-              <p>
-                Widgets
-                <span class="right badge badge-danger">New</span>
-              </p>
-            </a>
-          </li>
-          <li class="nav-item has-treeview">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-copy"></i>
-              <p>
-                Layout Options
-                <i class="fas fa-angle-left right"></i>
-                <span class="badge badge-info right">6</span>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="pages/layout/top-nav.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Top Navigation</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/layout/top-nav-sidebar.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Top Navigation + Sidebar</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/layout/boxed.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Boxed</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/layout/fixed-sidebar.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Fixed Sidebar</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/layout/fixed-topnav.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Fixed Navbar</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/layout/fixed-footer.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Fixed Footer</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/layout/collapsed-sidebar.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Collapsed Sidebar</p>
-                </a>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-item has-treeview">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-chart-pie"></i>
-              <p>
-                Charts
-                <i class="right fas fa-angle-left"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="pages/charts/chartjs.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>ChartJS</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/charts/flot.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Flot</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/charts/inline.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Inline</p>
-                </a>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-item has-treeview">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-tree"></i>
-              <p>
-                UI Elements
-                <i class="fas fa-angle-left right"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="pages/UI/general.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>General</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/UI/icons.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Icons</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/UI/buttons.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Buttons</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/UI/sliders.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Sliders</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/UI/modals.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Modals & Alerts</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/UI/navbar.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Navbar & Tabs</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/UI/timeline.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Timeline</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/UI/ribbons.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Ribbons</p>
-                </a>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-item has-treeview">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-edit"></i>
-              <p>
-                Forms
-                <i class="fas fa-angle-left right"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="pages/forms/general.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>General Elements</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/forms/advanced.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Advanced Elements</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/forms/editors.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Editors</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/forms/validation.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Validation</p>
-                </a>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-item has-treeview">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-table"></i>
-              <p>
-                Tables
-                <i class="fas fa-angle-left right"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="pages/tables/simple.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Simple Tables</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/tables/data.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>DataTables</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/tables/jsgrid.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>jsGrid</p>
-                </a>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-header">EXAMPLES</li>
-          <li class="nav-item">
-            <a href="pages/calendar.html" class="nav-link">
-              <i class="nav-icon far fa-calendar-alt"></i>
-              <p>
-                Calendar
-                <span class="badge badge-info right">2</span>
-              </p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="pages/gallery.html" class="nav-link">
-              <i class="nav-icon far fa-image"></i>
-              <p>
-                Gallery
-              </p>
-            </a>
-          </li>
-          <li class="nav-item has-treeview">
-            <a href="#" class="nav-link">
-              <i class="nav-icon far fa-envelope"></i>
-              <p>
-                Mailbox
-                <i class="fas fa-angle-left right"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="pages/mailbox/mailbox.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Inbox</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/mailbox/compose.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Compose</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/mailbox/read-mail.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Read</p>
-                </a>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-item has-treeview">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-book"></i>
-              <p>
-                Pages
-                <i class="fas fa-angle-left right"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="pages/examples/invoice.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Invoice</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/examples/profile.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Profile</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/examples/e-commerce.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>E-commerce</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/examples/projects.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Projects</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/examples/project-add.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Project Add</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/examples/project-edit.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Project Edit</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/examples/project-detail.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Project Detail</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/examples/contacts.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Contacts</p>
-                </a>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-item has-treeview">
-            <a href="#" class="nav-link">
-              <i class="nav-icon far fa-plus-square"></i>
-              <p>
-                Extras
-                <i class="fas fa-angle-left right"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="pages/examples/login.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Login</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/examples/register.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Register</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/examples/forgot-password.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Forgot Password</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/examples/recover-password.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Recover Password</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/examples/lockscreen.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Lockscreen</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/examples/legacy-user-menu.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Legacy User Menu</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/examples/language-menu.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Language Menu</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/examples/404.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Error 404</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/examples/500.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Error 500</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/examples/pace.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Pace</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/examples/blank.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Blank Page</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="starter.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Starter Page</p>
-                </a>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-header">MISCELLANEOUS</li>
-          <li class="nav-item">
-            <a href="https://adminlte.io/docs/3.0" class="nav-link">
-              <i class="nav-icon fas fa-file"></i>
-              <p>Documentation</p>
-            </a>
-          </li>
-          <li class="nav-header">MULTI LEVEL EXAMPLE</li>
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="fas fa-circle nav-icon"></i>
-              <p>Level 1</p>
-            </a>
-          </li>
-          <li class="nav-item has-treeview">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-circle"></i>
-              <p>
-                Level 1
-                <i class="right fas fa-angle-left"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Level 2</p>
-                </a>
-              </li>
-              <li class="nav-item has-treeview">
-                <a href="#" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>
-                    Level 2
-                    <i class="right fas fa-angle-left"></i>
-                  </p>
-                </a>
-                <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <a href="#" class="nav-link">
-                      <i class="far fa-dot-circle nav-icon"></i>
-                      <p>Level 3</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="#" class="nav-link">
-                      <i class="far fa-dot-circle nav-icon"></i>
-                      <p>Level 3</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="#" class="nav-link">
-                      <i class="far fa-dot-circle nav-icon"></i>
-                      <p>Level 3</p>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Level 2</p>
-                </a>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="fas fa-circle nav-icon"></i>
-              <p>Level 1</p>
-            </a>
-          </li>
-          <li class="nav-header">LABELS</li>
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="nav-icon far fa-circle text-danger"></i>
-              <p class="text">Important</p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="nav-icon far fa-circle text-warning"></i>
-              <p>Warning</p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="nav-icon far fa-circle text-info"></i>
-              <p>Informational</p>
-            </a>
-          </li>
-        </ul>
-      </nav>
-      <!-- /.sidebar-menu -->
-    </div>
-    <!-- /.sidebar -->
-  </aside>
-
-  <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <div class="content-header">
-      <div class="container-fluid">
-        <div class="row mb-2">
-          <div class="col-sm-6">
-            <h1 class="m-0 text-dark">Dashboard</h1>
-          </div><!-- /.col -->
-          <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Dashboard v1</li>
-            </ol>
-          </div><!-- /.col -->
-        </div><!-- /.row -->
-      </div><!-- /.container-fluid -->
-    </div>
-    <!-- /.content-header -->
-
-    <!-- Main content -->
-    <section class="content">
-      <div class="container-fluid">
-        <!-- Small boxes (Stat box) -->
-        <div class="row">
-          <div class="col-lg-3 col-6">
-            <!-- small box -->
-            <div class="small-box bg-info">
-              <div class="inner">
-                <h3>150</h3>
-
-                <p>New Orders</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-bag"></i>
-              </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+      <div class="row">
+        <div class="col-md-8">
+          <div class="card card-success">
+            <div class="card-header">
+              <h3 class="card-title">Patients Location</h3>
             </div>
-          </div>
-          <!-- ./col -->
-          <div class="col-lg-3 col-6">
-            <!-- small box -->
-            <div class="small-box bg-success">
-              <div class="inner">
-                <h3>53<sup style="font-size: 20px">%</sup></h3>
+            <div class="card-body p-0">
+              <div class="d-md-flex">
+                <div class="p-1 flex-fill" >
+                  <div id="world-map-markers" style="height: 400px; overflow: hidden">
+                    <div id="map"></div>
+                  </div>
+                  <script>
+                    function initMap() {
+                      var map = new google.maps.Map(document.getElementById('map'), {
+                        zoom: 6,
+                        center: {lat: 34.9526, lng:72.3311}
+                      });
+                      var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                      var markers = locations.map(function(location, i) {
+                        return new google.maps.Marker({
+                          position: location,
+                          label: Hospital[i % labels.length]
+                        });
+                      });
+                      // Add a marker clusterer to manage the markers.
+                      var markerCluster = new MarkerClusterer(map, markers,
+                          {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
+                    }
+                    var locations = [
+                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
+                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
+                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
+                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
+                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
+                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
+                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
+                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
+                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
+                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
+                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
+                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
+                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
+                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
+                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
+                      {lat: 34.0130809,lng:71.5555136},<!--Police Hospital-->
+                      {lat: 34.0130809,lng:71.5555136},<!--Police Hospital-->
+                      {lat: 34.0130809,lng:71.5555136},<!--Police Hospital-->
+                      {lat: 34.0130809,lng:71.5555136},<!--Police Hospital-->
+                      {lat: 34.0130809,lng:71.5555136},<!--Police Hospital-->
+                      {lat: 34.0130809,lng:71.5555136},<!--Police Hospital-->
+                      {lat: 34.1469887,lng:72.0356304},<!--MMC HOSPITAL Mardan-->
+                      {lat: 34.1469887,lng:72.0356304},<!--MMC HOSPITAL Mardan-->
+                      {lat: 34.1469887,lng:72.0356304},<!--MMC HOSPITAL Mardan-->
+                      {lat: 34.1469887,lng:72.0356304},<!--MMC HOSPITAL Mardan-->
+                      {lat: 34.1469887,lng:72.0356304},<!--MMC HOSPITAL Mardan-->
+                      {lat: 31.8191332,lng:70.8225261},<!--MMO HOSPITAL DI Khan-->
+                      {lat: 34.1534752,lng:71.7431843}, <!--DHQ Charsadda-->
+                      {lat: 34.1911539,lng:72.0431358},<!--DHQ Mardan-->
+                      {lat: 34.3269282,lng:73.1985739},<!--DHQ Mansehra-->
+                      {lat: 33.9923876,lng:71.4475074},<!--HMC Peshawar-->
+                    ]
+                  </script>
+                  <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclustererplus@4.0.1.min.js">
+                  </script>
+                  <script async defer
+                  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyATEMJExAEqqMKOWeQdJq6DLtlDlVpJfes&callback=initMap">
+                  </script>                    <!--Map Ends Here-->
+                </div>
+                <div class="card-pane-right bg-success pt-2 pb-2 pl-4 pr-4">
+                  <div style="margin-top: 60px;font-weight:bold;color:#fff;text-align:center;" class="description-block mb-4">
+                    <div class="sparkbar pad" data-color="#fff"></div>
+                    <h5 id="tmap" class="description-header"></h5>
+                    <span class="description-text">TOTAL</span>
+                  </div>
+                  <div style="margin-top: 10px;font-weight:bold;color:#fff;text-align:center;" class="description-block">
+                    <div class="sparkbar pad" data-color="#fff"></div>
+                    <h5 id="Confirm BOTTOM" class="description-header"></h5>
+                    <span class="description-text">CORONA POSITIVE</span>
+                  </div>
 
-                <p>Bounce Rate</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-stats-bars"></i>
-              </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                  <!-- /.description-block -->
+                  <div style="margin-top: 10px;font-weight:bold;color:#fff;text-align:center;" class="description-block mb-4">
+                    <div class="sparkbar pad" data-color="#fff"></div>
+                    <h5 id="smap" class="description-header"></h5>
+                    <span class="description-text">SUSPECTED</span>
+                  </div>
+                  <!-- /.description-block -->
+                  <div style="margin-top: 10px;font-weight:bold;color:#fff;text-align:center;" class="description-block">
+                    <div class="sparkbar pad" data-color="#fff"></div>
+                    <h5 id="rmap" class="description-header"></h5>
+                    <span class="description-text">RECOVERED</span>
+                  </div>
+                  <!-- /.description-block -->
+                </div><!-- /.card-pane-right -->
+              </div><!-- /.d-md-flex -->
             </div>
+            <!-- /.card-body -->
           </div>
-          <!-- ./col -->
-          <div class="col-lg-3 col-6">
-            <!-- small box -->
-            <div class="small-box bg-warning">
-              <div class="inner">
-                <h3>44</h3>
+          <!-- /.card -->
 
-                <p>User Registrations</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-person-add"></i>
-              </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-            </div>
-          </div>
-          <!-- ./col -->
-          <div class="col-lg-3 col-6">
-            <!-- small box -->
-            <div class="small-box bg-danger">
-              <div class="inner">
-                <h3>65</h3>
-
-                <p>Unique Visitors</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-pie-graph"></i>
-              </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-            </div>
-          </div>
-          <!-- ./col -->
+          <!-- TABLE: LATEST ORDERS -->
+          <!-- /.card -->
         </div>
-        <!-- /.row -->
-        <!-- Main row -->
-        <div class="row">
-          <!-- Left col -->
-          <section class="col-lg-7 connectedSortable">
-            <!-- Custom tabs (Charts with tabs)-->
-            <div class="card">
-              <div class="card-header">
-                <h3 class="card-title">
-                  <i class="fas fa-chart-pie mr-1"></i>
-                  Sales
-                </h3>
-                <div class="card-tools">
-                  <ul class="nav nav-pills ml-auto">
-                    <li class="nav-item">
-                      <a class="nav-link active" href="#revenue-chart" data-toggle="tab">Area</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="#sales-chart" data-toggle="tab">Donut</a>
-                    </li>
-                  </ul>
-                </div>
-              </div><!-- /.card-header -->
-              <div class="card-body">
-                <div class="tab-content p-0">
-                  <!-- Morris chart - Sales -->
-                  <div class="chart tab-pane active" id="revenue-chart"
-                       style="position: relative; height: 300px;">
-                      <canvas id="revenue-chart-canvas" height="300" style="height: 300px;"></canvas>                         
-                   </div>
-                  <div class="chart tab-pane" id="sales-chart" style="position: relative; height: 300px;">
-                    <canvas id="sales-chart-canvas" height="300" style="height: 300px;"></canvas>                         
-                  </div>  
-                </div>
-              </div><!-- /.card-body -->
-            </div>
-            <!-- /.card -->
+        <!-- /.col -->
 
-            <!-- DIRECT CHAT -->
-            <div class="card direct-chat direct-chat-primary">
-              <div class="card-header">
-                <h3 class="card-title">Direct Chat</h3>
+        <div class="col-md-4">
+          <!-- Info Boxes Style 2 -->
+          <!-- /.info-box -->
 
-                <div class="card-tools">
-                  <span data-toggle="tooltip" title="3 New Messages" class="badge badge-primary">3</span>
-                  <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                    <i class="fas fa-minus"></i>
-                  </button>
-                  <button type="button" class="btn btn-tool" data-toggle="tooltip" title="Contacts"
-                          data-widget="chat-pane-toggle">
-                    <i class="fas fa-comments"></i>
-                  </button>
-                  <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i>
-                  </button>
-                </div>
-              </div>
-              <!-- /.card-header -->
-              <div class="card-body">
-                <!-- Conversations are loaded here -->
-                <div class="direct-chat-messages">
-                  <!-- Message. Default to the left -->
-                  <div class="direct-chat-msg">
-                    <div class="direct-chat-infos clearfix">
-                      <span class="direct-chat-name float-left">Alexander Pierce</span>
-                      <span class="direct-chat-timestamp float-right">23 Jan 2:00 pm</span>
-                    </div>
-                    <!-- /.direct-chat-infos -->
-                    <img class="direct-chat-img" src="dist/img/user1-128x128.jpg" alt="message user image">
-                    <!-- /.direct-chat-img -->
-                    <div class="direct-chat-text">
-                      Is this template really for free? That's unbelievable!
-                    </div>
-                    <!-- /.direct-chat-text -->
-                  </div>
-                  <!-- /.direct-chat-msg -->
+          <div class="card card-warning">
+            <div class="card-body">
+				          <img style="height:350px;width:100%;"src="img/1.jpg"/>
+          </div>
 
-                  <!-- Message to the right -->
-                  <div class="direct-chat-msg right">
-                    <div class="direct-chat-infos clearfix">
-                      <span class="direct-chat-name float-right">Sarah Bullock</span>
-                      <span class="direct-chat-timestamp float-left">23 Jan 2:05 pm</span>
-                    </div>
-                    <!-- /.direct-chat-infos -->
-                    <img class="direct-chat-img" src="dist/img/user3-128x128.jpg" alt="message user image">
-                    <!-- /.direct-chat-img -->
-                    <div class="direct-chat-text">
-                      You better believe it!
-                    </div>
-                    <!-- /.direct-chat-text -->
-                  </div>
-                  <!-- /.direct-chat-msg -->
-
-                  <!-- Message. Default to the left -->
-                  <div class="direct-chat-msg">
-                    <div class="direct-chat-infos clearfix">
-                      <span class="direct-chat-name float-left">Alexander Pierce</span>
-                      <span class="direct-chat-timestamp float-right">23 Jan 5:37 pm</span>
-                    </div>
-                    <!-- /.direct-chat-infos -->
-                    <img class="direct-chat-img" src="dist/img/user1-128x128.jpg" alt="message user image">
-                    <!-- /.direct-chat-img -->
-                    <div class="direct-chat-text">
-                      Working with AdminLTE on a great new app! Wanna join?
-                    </div>
-                    <!-- /.direct-chat-text -->
-                  </div>
-                  <!-- /.direct-chat-msg -->
-
-                  <!-- Message to the right -->
-                  <div class="direct-chat-msg right">
-                    <div class="direct-chat-infos clearfix">
-                      <span class="direct-chat-name float-right">Sarah Bullock</span>
-                      <span class="direct-chat-timestamp float-left">23 Jan 6:10 pm</span>
-                    </div>
-                    <!-- /.direct-chat-infos -->
-                    <img class="direct-chat-img" src="dist/img/user3-128x128.jpg" alt="message user image">
-                    <!-- /.direct-chat-img -->
-                    <div class="direct-chat-text">
-                      I would love to.
-                    </div>
-                    <!-- /.direct-chat-text -->
-                  </div>
-                  <!-- /.direct-chat-msg -->
-
-                </div>
-                <!--/.direct-chat-messages-->
-
-                <!-- Contacts are loaded here -->
-                <div class="direct-chat-contacts">
-                  <ul class="contacts-list">
-                    <li>
-                      <a href="#">
-                        <img class="contacts-list-img" src="dist/img/user1-128x128.jpg">
-
-                        <div class="contacts-list-info">
-                          <span class="contacts-list-name">
-                            Count Dracula
-                            <small class="contacts-list-date float-right">2/28/2015</small>
-                          </span>
-                          <span class="contacts-list-msg">How have you been? I was...</span>
-                        </div>
-                        <!-- /.contacts-list-info -->
-                      </a>
-                    </li>
-                    <!-- End Contact Item -->
-                    <li>
-                      <a href="#">
-                        <img class="contacts-list-img" src="dist/img/user7-128x128.jpg">
-
-                        <div class="contacts-list-info">
-                          <span class="contacts-list-name">
-                            Sarah Doe
-                            <small class="contacts-list-date float-right">2/23/2015</small>
-                          </span>
-                          <span class="contacts-list-msg">I will be waiting for...</span>
-                        </div>
-                        <!-- /.contacts-list-info -->
-                      </a>
-                    </li>
-                    <!-- End Contact Item -->
-                    <li>
-                      <a href="#">
-                        <img class="contacts-list-img" src="dist/img/user3-128x128.jpg">
-
-                        <div class="contacts-list-info">
-                          <span class="contacts-list-name">
-                            Nadia Jolie
-                            <small class="contacts-list-date float-right">2/20/2015</small>
-                          </span>
-                          <span class="contacts-list-msg">I'll call you back at...</span>
-                        </div>
-                        <!-- /.contacts-list-info -->
-                      </a>
-                    </li>
-                    <!-- End Contact Item -->
-                    <li>
-                      <a href="#">
-                        <img class="contacts-list-img" src="dist/img/user5-128x128.jpg">
-
-                        <div class="contacts-list-info">
-                          <span class="contacts-list-name">
-                            Nora S. Vans
-                            <small class="contacts-list-date float-right">2/10/2015</small>
-                          </span>
-                          <span class="contacts-list-msg">Where is your new...</span>
-                        </div>
-                        <!-- /.contacts-list-info -->
-                      </a>
-                    </li>
-                    <!-- End Contact Item -->
-                    <li>
-                      <a href="#">
-                        <img class="contacts-list-img" src="dist/img/user6-128x128.jpg">
-
-                        <div class="contacts-list-info">
-                          <span class="contacts-list-name">
-                            John K.
-                            <small class="contacts-list-date float-right">1/27/2015</small>
-                          </span>
-                          <span class="contacts-list-msg">Can I take a look at...</span>
-                        </div>
-                        <!-- /.contacts-list-info -->
-                      </a>
-                    </li>
-                    <!-- End Contact Item -->
-                    <li>
-                      <a href="#">
-                        <img class="contacts-list-img" src="dist/img/user8-128x128.jpg">
-
-                        <div class="contacts-list-info">
-                          <span class="contacts-list-name">
-                            Kenneth M.
-                            <small class="contacts-list-date float-right">1/4/2015</small>
-                          </span>
-                          <span class="contacts-list-msg">Never mind I found...</span>
-                        </div>
-                        <!-- /.contacts-list-info -->
-                      </a>
-                    </li>
-                    <!-- End Contact Item -->
-                  </ul>
-                  <!-- /.contacts-list -->
-                </div>
-                <!-- /.direct-chat-pane -->
-              </div>
-              <!-- /.card-body -->
-              <div class="card-footer">
-                <form action="#" method="post">
-                  <div class="input-group">
-                    <input type="text" name="message" placeholder="Type Message ..." class="form-control">
-                    <span class="input-group-append">
-                      <button type="button" class="btn btn-primary">Send</button>
-                    </span>
-                  </div>
-                </form>
-              </div>
-              <!-- /.card-footer-->
-            </div>
-            <!--/.direct-chat -->
-
-            <!-- TO DO List -->
-            <div class="card">
-              <div class="card-header">
-                <h3 class="card-title">
-                  <i class="ion ion-clipboard mr-1"></i>
-                  To Do List
-                </h3>
-
-                <div class="card-tools">
-                  <ul class="pagination pagination-sm">
-                    <li class="page-item"><a href="#" class="page-link">&laquo;</a></li>
-                    <li class="page-item"><a href="#" class="page-link">1</a></li>
-                    <li class="page-item"><a href="#" class="page-link">2</a></li>
-                    <li class="page-item"><a href="#" class="page-link">3</a></li>
-                    <li class="page-item"><a href="#" class="page-link">&raquo;</a></li>
-                  </ul>
-                </div>
-              </div>
-              <!-- /.card-header -->
-              <div class="card-body">
-                <ul class="todo-list" data-widget="todo-list">
-                  <li>
-                    <!-- drag handle -->
-                    <span class="handle">
-                      <i class="fas fa-ellipsis-v"></i>
-                      <i class="fas fa-ellipsis-v"></i>
-                    </span>
-                    <!-- checkbox -->
-                    <div  class="icheck-primary d-inline ml-2">
-                      <input type="checkbox" value="" name="todo1" id="todoCheck1">
-                      <label for="todoCheck1"></label>
-                    </div>
-                    <!-- todo text -->
-                    <span class="text">Design a nice theme</span>
-                    <!-- Emphasis label -->
-                    <small class="badge badge-danger"><i class="far fa-clock"></i> 2 mins</small>
-                    <!-- General tools such as edit or delete-->
-                    <div class="tools">
-                      <i class="fas fa-edit"></i>
-                      <i class="fas fa-trash-o"></i>
-                    </div>
-                  </li>
-                  <li>
-                    <span class="handle">
-                      <i class="fas fa-ellipsis-v"></i>
-                      <i class="fas fa-ellipsis-v"></i>
-                    </span>
-                    <div  class="icheck-primary d-inline ml-2">
-                      <input type="checkbox" value="" name="todo2" id="todoCheck2" checked>
-                      <label for="todoCheck2"></label>
-                    </div>
-                    <span class="text">Make the theme responsive</span>
-                    <small class="badge badge-info"><i class="far fa-clock"></i> 4 hours</small>
-                    <div class="tools">
-                      <i class="fas fa-edit"></i>
-                      <i class="fas fa-trash-o"></i>
-                    </div>
-                  </li>
-                  <li>
-                    <span class="handle">
-                      <i class="fas fa-ellipsis-v"></i>
-                      <i class="fas fa-ellipsis-v"></i>
-                    </span>
-                    <div  class="icheck-primary d-inline ml-2">
-                      <input type="checkbox" value="" name="todo3" id="todoCheck3">
-                      <label for="todoCheck3"></label>
-                    </div>
-                    <span class="text">Let theme shine like a star</span>
-                    <small class="badge badge-warning"><i class="far fa-clock"></i> 1 day</small>
-                    <div class="tools">
-                      <i class="fas fa-edit"></i>
-                      <i class="fas fa-trash-o"></i>
-                    </div>
-                  </li>
-                  <li>
-                    <span class="handle">
-                      <i class="fas fa-ellipsis-v"></i>
-                      <i class="fas fa-ellipsis-v"></i>
-                    </span>
-                    <div  class="icheck-primary d-inline ml-2">
-                      <input type="checkbox" value="" name="todo4" id="todoCheck4">
-                      <label for="todoCheck4"></label>
-                    </div>
-                    <span class="text">Let theme shine like a star</span>
-                    <small class="badge badge-success"><i class="far fa-clock"></i> 3 days</small>
-                    <div class="tools">
-                      <i class="fas fa-edit"></i>
-                      <i class="fas fa-trash-o"></i>
-                    </div>
-                  </li>
-                  <li>
-                    <span class="handle">
-                      <i class="fas fa-ellipsis-v"></i>
-                      <i class="fas fa-ellipsis-v"></i>
-                    </span>
-                    <div  class="icheck-primary d-inline ml-2">
-                      <input type="checkbox" value="" name="todo5" id="todoCheck5">
-                      <label for="todoCheck5"></label>
-                    </div>
-                    <span class="text">Check your messages and notifications</span>
-                    <small class="badge badge-primary"><i class="far fa-clock"></i> 1 week</small>
-                    <div class="tools">
-                      <i class="fas fa-edit"></i>
-                      <i class="fas fa-trash-o"></i>
-                    </div>
-                  </li>
-                  <li>
-                    <span class="handle">
-                      <i class="fas fa-ellipsis-v"></i>
-                      <i class="fas fa-ellipsis-v"></i>
-                    </span>
-                    <div  class="icheck-primary d-inline ml-2">
-                      <input type="checkbox" value="" name="todo6" id="todoCheck6">
-                      <label for="todoCheck6"></label>
-                    </div>
-                    <span class="text">Let theme shine like a star</span>
-                    <small class="badge badge-secondary"><i class="far fa-clock"></i> 1 month</small>
-                    <div class="tools">
-                      <i class="fas fa-edit"></i>
-                      <i class="fas fa-trash-o"></i>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-              <!-- /.card-body -->
-              <div class="card-footer clearfix">
-                <button type="button" class="btn btn-info float-right"><i class="fas fa-plus"></i> Add item</button>
-              </div>
-            </div>
-            <!-- /.card -->
-          </section>
-          <!-- /.Left col -->
-          <!-- right col (We are only adding the ID to make the widgets sortable)-->
-          <section class="col-lg-5 connectedSortable">
-
-            <!-- Map card -->
-            <div class="card bg-gradient-primary">
-              <div class="card-header border-0">
-                <h3 class="card-title">
-                  <i class="fas fa-map-marker-alt mr-1"></i>
-                  Visitors
-                </h3>
-                <!-- card tools -->
-                <div class="card-tools">
-                  <button type="button"
-                          class="btn btn-primary btn-sm daterange"
-                          data-toggle="tooltip"
-                          title="Date range">
-                    <i class="far fa-calendar-alt"></i>
-                  </button>
-                  <button type="button"
-                          class="btn btn-primary btn-sm"
-                          data-card-widget="collapse"
-                          data-toggle="tooltip"
-                          title="Collapse">
-                    <i class="fas fa-minus"></i>
-                  </button>
-                </div>
-                <!-- /.card-tools -->
-              </div>
-              <div class="card-body">
-                <div id="world-map" style="height: 250px; width: 100%;"></div>
-              </div>
-              <!-- /.card-body-->
-              <div class="card-footer bg-transparent">
-                <div class="row">
-                  <div class="col-4 text-center">
-                    <div id="sparkline-1"></div>
-                    <div class="text-white">Visitors</div>
-                  </div>
-                  <!-- ./col -->
-                  <div class="col-4 text-center">
-                    <div id="sparkline-2"></div>
-                    <div class="text-white">Online</div>
-                  </div>
-                  <!-- ./col -->
-                  <div class="col-4 text-center">
-                    <div id="sparkline-3"></div>
-                    <div class="text-white">Sales</div>
-                  </div>
-                  <!-- ./col -->
-                </div>
-                <!-- /.row -->
-              </div>
-            </div>
-            <!-- /.card -->
-
-            <!-- solid sales graph -->
-            <div class="card bg-gradient-info">
-              <div class="card-header border-0">
-                <h3 class="card-title">
-                  <i class="fas fa-th mr-1"></i>
-                  Sales Graph
-                </h3>
-
-                <div class="card-tools">
-                  <button type="button" class="btn bg-info btn-sm" data-card-widget="collapse">
-                    <i class="fas fa-minus"></i>
-                  </button>
-                  <button type="button" class="btn bg-info btn-sm" data-card-widget="remove">
-                    <i class="fas fa-times"></i>
-                  </button>
-                </div>
-              </div>
-              <div class="card-body">
-                <canvas class="chart" id="line-chart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-              </div>
-              <!-- /.card-body -->
-              <div class="card-footer bg-transparent">
-                <div class="row">
-                  <div class="col-4 text-center">
-                    <input type="text" class="knob" data-readonly="true" value="20" data-width="60" data-height="60"
-                           data-fgColor="#39CCCC">
-
-                    <div class="text-white">Mail-Orders</div>
-                  </div>
-                  <!-- ./col -->
-                  <div class="col-4 text-center">
-                    <input type="text" class="knob" data-readonly="true" value="50" data-width="60" data-height="60"
-                           data-fgColor="#39CCCC">
-
-                    <div class="text-white">Online</div>
-                  </div>
-                  <!-- ./col -->
-                  <div class="col-4 text-center">
-                    <input type="text" class="knob" data-readonly="true" value="30" data-width="60" data-height="60"
-                           data-fgColor="#39CCCC">
-
-                    <div class="text-white">In-Store</div>
-                  </div>
-                  <!-- ./col -->
-                </div>
-                <!-- /.row -->
-              </div>
-              <!-- /.card-footer -->
-            </div>
-            <!-- /.card -->
-
-            <!-- Calendar -->
-            <div class="card bg-gradient-success">
-              <div class="card-header border-0">
-
-                <h3 class="card-title">
-                  <i class="far fa-calendar-alt"></i>
-                  Calendar
-                </h3>
-                <!-- tools card -->
-                <div class="card-tools">
-                  <!-- button with a dropdown -->
-                  <div class="btn-group">
-                    <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown">
-                      <i class="fas fa-bars"></i></button>
-                    <div class="dropdown-menu float-right" role="menu">
-                      <a href="#" class="dropdown-item">Add new event</a>
-                      <a href="#" class="dropdown-item">Clear events</a>
-                      <div class="dropdown-divider"></div>
-                      <a href="#" class="dropdown-item">View calendar</a>
-                    </div>
-                  </div>
-                  <button type="button" class="btn btn-success btn-sm" data-card-widget="collapse">
-                    <i class="fas fa-minus"></i>
-                  </button>
-                  <button type="button" class="btn btn-success btn-sm" data-card-widget="remove">
-                    <i class="fas fa-times"></i>
-                  </button>
-                </div>
-                <!-- /. tools -->
-              </div>
-              <!-- /.card-header -->
-              <div class="card-body pt-0">
-                <!--The calendar -->
-                <div id="calendar" style="width: 100%"></div>
-              </div>
-              <!-- /.card-body -->
-            </div>
-            <!-- /.card -->
-          </section>
-          <!-- right col -->
         </div>
-        <!-- /.row (main row) -->
-      </div><!-- /.container-fluid -->
-    </section>
-    <!-- /.content -->
-  </div>
-  <!-- /.content-wrapper -->
-  <footer class="main-footer">
-    <strong>Copyright &copy; 2014-2019 <a href="http://adminlte.io">AdminLTE.io</a>.</strong>
-    All rights reserved.
-    <div class="float-right d-none d-sm-inline-block">
-      <b>Version</b> 3.0.3-pre
+      </div>
     </div>
-  </footer>
 
-  <!-- Control Sidebar -->
-  <aside class="control-sidebar control-sidebar-dark">
-    <!-- Control sidebar content goes here -->
-  </aside>
-  <!-- /.control-sidebar -->
-</div>
-<!-- ./wrapper -->
+</section><!-- Portfolio end -->
+
+<section id="main-container">
+	<div class="container">
+		<!-- Services -->
+		<div class="row">
+			<div class="col-md-12 heading">
+				<span class="title-icon classic float-left"><i class="fa fa-comments"></i></span>
+				<h2 class="title classic">Questions Answered At a Galance</h2>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-6 col-sm-6">
+				<div class="faq-box">
+					<h4>Q. What is CoronaVirus or COVID-19?</h4>
+          <p>A Coronavirus, also known as COVID-19, is a virus found in animals, which can be transmitted from animals
+             to humans and then to other humans upon contact. Coronavirus belongs to a large family of viruses, some of 
+             them cause serious illnesses in animals and some in humans.</p>
+        </div>
+        
+        <div class="faq-box">
+					<h4>Q. How is CoronaVirus or COVID-19 diagnosed?</h4>
+          <p>If you believe that you are exhibiting the said symptoms, the next step is contacting your family doctor. 
+            Call in and share your concerns so that your doctor can guide you accordingly. Next, your doctor will run 
+            some tests to eliminate other common infections. Depending on the results, your doctor might ask you to 
+            self-isolate to prevent further spreading of the virus. Refrain from using unauthorized, fraudulent test kits for COVID-19.</p>
+				</div>
+
+				<div class="faq-box">
+					<h4>Q. What are the some common facts related to COVID-19?</h4>
+          <p><li>Eating garlic <b>has not</b> prevented people from getting COVID-19.</li>
+            <li>Antibiotics <b>can not</b> work against the virus.</li>
+            <li>Cold weather and snow <b>can not</b> kill the virus.</li>
+            <li>COVID-19 <b>can not</b> be transmitted by using goods that are manufactured in China.</li>
+            <li>COVID-10 <b>can not</b> be transmitted through mosquito's bites.</li></p>
+				</div>
+
+
+			</div><!-- End col-md-6 -->
+
+			<div class="col-md-6 col-sm-6">
+
+				<div class="faq-box">
+					<h4>Q. What are the symptoms of COVID-19?</h4>
+          <p>The symptoms of COVID-19 range from mild to severe, the affected will show symptoms after 2-14 days of 
+            getting infected. <br/>Symptoms may include: FEVER, COUGH, SHORTNESS OF BREATH.
+            <br/> Experts report that those with weak immune systems are more prone to this virus and they might experience 
+            bronchitis or pneumonia. There is also a chance of you not developing any symptoms of coronavirus even after being exposed.</p>
+				</div>
+
+				<div class="faq-box">
+					<h4>Q. What steps should one take to prevent or avoid the spread of COVID-19?</h4>
+          <p><b>Social distancing.</b> Avoid people who are sick and large crowds.
+            <br/>If you think you are developing any symptoms, them stay home and contact your family doctor. 
+            <br/> Avoid touching your mouth, nose, and nose. Use your sleeve to cover your mouth and nose while coughing and sneezing.
+            <br/> Frequently wash your hands for at least 20 seconds, especially after going to washroom, after coughing and sneezing, and before eating.
+            In case water and soap are not available, sanitize your hands with sanitizer with 60% alcohol.
+            <br/><b>Take these precautions and stay safe.</b></p>
+				</div>
+
+				<div class="faq-box">
+					<h4>Q. What Is The treatment of COVID-19?</h4>
+          <p>Currently, there is no vaccine or any other treatment of Coronavirus; its symptoms go away on their own. 
+            Doctors might prescribe you some medicine to treat your symptoms. FDA is emphasizing to be cautious of fake 
+            websites and medical stores selling products, claiming to cure Coronavirus. Moreover, refrain from taking any 
+            form of chloroquine. If you are experiencing any breathing problem, seek medical help immediately.</p>
+				</div>
+			</div><!-- End col-md-6 -->
+		</div><!-- Content row  end -->
+	</div>
+	<!--/ container end -->
+</section>
+
+
+
+<section id="image-block" class="image-block p-0">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-6 ts-padding"
+				style="height:650px;background:url(img/2.jpg) 50% 50% / cover no-repeat;">
+			</div>
+			<div class="col-md-6 ts-padding img-block-right">
+				<div class="img-block-head text-center">
+					<h2>Staying Away From</h2>
+					<h3>Corona Virus</h3>
+					<p>There’s currently no vaccine to prevent coronavirus disease (COVID-19).
+            You can protect yourself and help prevent spreading the virus to others if you:
+				</p>
+				</div>
+
+				<div class="gap-30"></div>
+
+				<div class="image-block-content">
+					<span class="feature-icon float-left"><i class="fa fa-hand-paper-o"></i></span>
+					<div class="feature-content">
+						<h3>Wash Hands</h3>
+						<p>Wash your hands regularly for 20 seconds, with soap and water or alcohol-based hand sanitizers.</p>
+					</div>
+				</div>
+
+        <div class="image-block-content">
+					<span class="feature-icon float-left"><i class="fa fa-times"></i></span>
+					<div class="feature-content">
+						<h3>Don't touch your face</h3>
+						<p>Don't touch your eyes, nose, or mouth if your hands are not clean.</p>
+					</div>
+				</div>
+
+				<!--/ End 1st block -->
+
+				<div class="image-block-content">
+					<span class="feature-icon float-left"><i class="fa fa-handshake-o"></i></span>
+					<div class="feature-content">
+						<h3>Avoid close contact</h3>
+						<p>Avoid close contact atleast 1 meter or 3 feet with people who are unwell</p>
+					</div>
+				</div>
+				<!--/ End 1st block -->
+
+				<div class="image-block-content">
+					<span class="feature-icon float-left"><i class="fa fa-home"></i></span>
+					<div class="feature-content">
+						<h3>Social Distancing</h3>
+						<p>Stay home and self-isolate from others in the household if you feel unwell</p>
+					</div>
+				</div>
+				<!--/ End 1st block -->
+
+			</div>
+		</div>
+	</div>
+</section>
+<!--/ Image block end -->
+
+
+
+
+
+
+
+
+	<!-- Footer start -->
+
+
+	<!-- Copyright start -->
+	<section id="copyright" class="copyright angle">
+	  <div class="container">
+	    <!--/ Row end -->
+	    <div class="row">
+	      <div class="col-md-12 text-center">
+          <div class="copyright-info">
+        <script>
+          document.write(new Date().getFullYear());
+        </script>
+
+        ©Copyright Government of KhyberPukhtoonKhwa, All Rights Reserved|Powered By
+          <a href="#"><img src="https://www.thecyberden.com/img/cylogo.png" width="22" height="20"></a>
+          <a href="https://www.thecyberden.com" target="_blank">The CyberDen</a>
+      </div>
+
+	      </div>
+	    </div>
+	    <!--/ Row end -->
+	    <div id="back-to-top" data-spy="affix" data-offset-top="10" class="back-to-top affix position-fixed">
+	      <button class="btn btn-primary" title="Back to Top"><i class="fa fa-angle-double-up"></i></button>
+	    </div>
+	  </div>
+	  <!--/ Container end -->
+	</section>
+	<!--/ Copyright end -->
+
+</div><!-- Body inner end -->
 
 <!-- jQuery -->
-<script src="plugins/jquery/jquery.min.js"></script>
-<!-- jQuery UI 1.11.4 -->
-<script src="plugins/jquery-ui/jquery-ui.min.js"></script>
-<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
-<script>
-  $.widget.bridge('uibutton', $.ui.button)
-</script>
-<!-- Bootstrap 4 -->
-<script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-<!-- ChartJS -->
-<script src="plugins/chart.js/Chart.min.js"></script>
-<!-- Sparkline -->
-<script src="plugins/sparklines/sparkline.js"></script>
-<!-- JQVMap -->
-<script src="plugins/jqvmap/jquery.vmap.min.js"></script>
-<script src="plugins/jqvmap/maps/jquery.vmap.usa.js"></script>
-<!-- jQuery Knob Chart -->
-<script src="plugins/jquery-knob/jquery.knob.min.js"></script>
-<!-- daterangepicker -->
-<script src="plugins/moment/moment.min.js"></script>
-<script src="plugins/daterangepicker/daterangepicker.js"></script>
-<!-- Tempusdominus Bootstrap 4 -->
-<script src="plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
-<!-- Summernote -->
-<script src="plugins/summernote/summernote-bs4.min.js"></script>
-<!-- overlayScrollbars -->
-<script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
-<!-- AdminLTE App -->
-<script src="dist/js/adminlte.js"></script>
-<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-<script src="dist/js/pages/dashboard.js"></script>
-<!-- AdminLTE for demo purposes -->
-<script src="dist/js/demo.js"></script>
+<script src="plugins/jQuery/jquery.min.js"></script>
+<!-- Bootstrap JS -->
+<script src="plugins/bootstrap/bootstrap.min.js"></script>
+<!-- Style Switcher -->
+<script type="text/javascript" src="plugins/style-switcher.js"></script>
+<!-- Owl Carousel -->
+<script type="text/javascript" src="plugins/owl/owl.carousel.js"></script>
+<!-- PrettyPhoto -->
+<script type="text/javascript" src="plugins/jquery.prettyPhoto.js"></script>
+<!-- Bxslider -->
+<script type="text/javascript" src="plugins/flex-slider/jquery.flexslider.js"></script>
+<!-- CD Hero slider -->
+<script type="text/javascript" src="plugins/cd-hero/cd-hero.js"></script>
+<!-- Isotope -->
+<script type="text/javascript" src="plugins/isotope.js"></script>
+<script type="text/javascript" src="plugins/ini.isotope.js"></script>
+<!-- Wow Animation -->
+<script type="text/javascript" src="plugins/wow.min.js"></script>
+<!-- Eeasing -->
+<script type="text/javascript" src="plugins/jquery.easing.1.3.js"></script>
+<!-- Counter -->
+<script type="text/javascript" src="plugins/jquery.counterup.min.js"></script>
+<!-- Waypoints -->
+<script type="text/javascript" src="plugins/waypoints.min.js"></script>
+<!-- google map -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCcABaamniA6OL5YvYSpB3pFMNrXwXnLwU&libraries=places"></script>
+<script src="plugins/google-map/gmap.js"></script>
+
+<!-- Main Script -->
+<script src="js/script.js"></script>
+
 </body>
+
 </html>
