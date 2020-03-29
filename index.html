@@ -4,18 +4,41 @@
 <head>
   <meta charset="utf-8">
   <style>
-      /* Always set the map height explicitly to define the size of the div
-       * element that contains the map. */
-      #map {
-        height: 100%;
-      }
-      /* Optional: Makes the sample page fill the window. */
-      html, body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-      }
-    </style>
+  #map {
+    height: 100%;
+  }
+
+  html,
+  body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  #floating-panel {
+    position: absolute;
+    top: 10px;
+    left: 25%;
+    z-index: 5;
+    background-color: #fff;
+    padding: 5px;
+    border: 1px solid #999;
+    text-align: center;
+    font-family: 'Roboto', 'sans-serif';
+    line-height: 30px;
+    padding-left: 10px;
+  }
+
+  #floating-panel {
+    background-color: #fff;
+    border: 1px solid #999;
+    left: 25%;
+    padding: 5px;
+    position: absolute;
+    top: 10px;
+    z-index: 5;
+  }
+  </style>
 
   <title>COVID-19 - Help & Support</title>
 
@@ -285,46 +308,26 @@
 </head>
 
 <body>
+<div class="body-inner">
 
-	<!-- Style switcher start -->
-	<!-- <div class="style-switch-wrapper">
-		<div class="style-switch-button">
-			<i class="fa fa-sliders"></i>
-		</div>
-		<h3>Style Options</h3>
-		<button id="preset2" class="btn btn-sm btn-primary"></button>
-		<br/><br/>
-		<a class="btn btn-sm btn-primary close-styler float-right">Close X</a>
-	</div> -->
-	<!-- Style switcher end -->
-
-	<div class="body-inner">
-
-<!-- Header start -->
 <header id="header" class="fixed-top header" role="banner">
-	<!-- <a class="navbar-brand" href="index.html"><img class="img-fluid float-right" src="images/logo.png" alt="logo"></a> -->
 	<div class="container">
 		<nav class="navbar navbar-expand-lg navbar-dark">
 			<button class="navbar-toggler ml-auto border-0 rounded-0 text-white" type="button" data-toggle="collapse"
 				data-target="#navigation" aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="fa fa-bars"></span>
 			</button>
-      <img src="img/corona1.png" style="width: 150px; padding-top:15px;padding-bottom:15px;align:left;" />
-
+      <img src="img/corona1.png" class="img-fluid float-right" style="width: 150px; padding-top:15px;padding-bottom:15px;align:left;" />
 			<div class="collapse navbar-collapse text-center" id="navigation">
 				<ul class="navbar-nav ml-auto">
           <a class="nav-link active" href="#">Home</a>
           <a class="nav-link" href="#image-block">Learn More</a></a>
           <a class="nav-link" href="#main-container">FAQ's</a></a>
-
 				</ul>
 			</div>
 		</nav>
 	</div>
 </header>
-<!--/ Header end -->
-
-<!-- Slider start -->
 <section id="home" class="p-0">
 	<div id="main-slide" class="cd-hero">
 		<ul class="cd-hero-slider">
@@ -340,13 +343,10 @@
 					<a href="#portfolio" class="btn btn-primary solid cd-btn">Learn More</a>
 				</div>
 			</li>
-
 		</ul>
-
 	</div>
 </section>
 
-<!-- Counter Strat -->
 <section class="ts_counter p-0">
 	<div class="container-fluid">
 		<div class="row facts-wrapper wow fadeInLeft text-center">
@@ -384,13 +384,7 @@
 
 		</div>
 	</div>
-	<!--/ Container end -->
 </section>
-<!--/ Counter end -->
-
-<!-- Service box start -->
-
-<!-- Portfolio start -->
 <section id="portfolio" class="portfolio">
 	<div class="container">
       <div class="row">
@@ -469,61 +463,77 @@
                     <div id="map"></div>
                   </div>
                   <script>
-                    function initMap() {
-                      var map = new google.maps.Map(document.getElementById('map'), {
-                        zoom: 6,
-                        center: {lat: 34.9526, lng:72.3311}
-                      });
-                      var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-                      var markers = locations.map(function(location, i) {
-                        return new google.maps.Marker({
-                          position: location,
-                          label: Hospital[i % labels.length]
-                        });
-                      });
-                      // Add a marker clusterer to manage the markers.
-                      var markerCluster = new MarkerClusterer(map, markers,
-                          {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
-                    }
-                    var locations = [
-                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
-                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
-                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
-                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
-                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
-                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
-                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
-                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
-                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
-                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
-                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
-                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
-                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
-                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
-                      {lat: 31.7890675,lng:70.222832},<!--TYPE.D.HOSPITAL SUB DIVISION DARAZINDA DIK.-->
-                      {lat: 34.0130809,lng:71.5555136},<!--Police Hospital-->
-                      {lat: 34.0130809,lng:71.5555136},<!--Police Hospital-->
-                      {lat: 34.0130809,lng:71.5555136},<!--Police Hospital-->
-                      {lat: 34.0130809,lng:71.5555136},<!--Police Hospital-->
-                      {lat: 34.0130809,lng:71.5555136},<!--Police Hospital-->
-                      {lat: 34.0130809,lng:71.5555136},<!--Police Hospital-->
-                      {lat: 34.1469887,lng:72.0356304},<!--MMC HOSPITAL Mardan-->
-                      {lat: 34.1469887,lng:72.0356304},<!--MMC HOSPITAL Mardan-->
-                      {lat: 34.1469887,lng:72.0356304},<!--MMC HOSPITAL Mardan-->
-                      {lat: 34.1469887,lng:72.0356304},<!--MMC HOSPITAL Mardan-->
-                      {lat: 34.1469887,lng:72.0356304},<!--MMC HOSPITAL Mardan-->
-                      {lat: 31.8191332,lng:70.8225261},<!--MMO HOSPITAL DI Khan-->
-                      {lat: 34.1534752,lng:71.7431843}, <!--DHQ Charsadda-->
-                      {lat: 34.1911539,lng:72.0431358},<!--DHQ Mardan-->
-                      {lat: 34.3269282,lng:73.1985739},<!--DHQ Mansehra-->
-                      {lat: 33.9923876,lng:71.4475074},<!--HMC Peshawar-->
+                  var map, heatmap;
+                  function initMap() {
+                    map = new google.maps.Map(document.getElementById('map'), {
+                      zoom: 5,
+                      center: {lat: 34.9526, lng:72.3311},
+                    });
+
+                    heatmap = new google.maps.visualization.HeatmapLayer({
+                      data: getPoints(),
+                      map: map
+                    });
+                    var gradient = [
+                      'rgba(0, 255, 255, 0)',
+                      'rgba(0, 255, 255, 1)',
+                      'rgba(0, 191, 255, 1)',
+                      'rgba(0, 127, 255, 1)',
+                      'rgba(0, 63, 255, 1)',
+                      'rgba(0, 0, 255, 1)',
+                      'rgba(0, 0, 223, 1)',
+                      'rgba(0, 0, 191, 1)',
+                      'rgba(0, 0, 159, 1)',
+                      'rgba(0, 0, 127, 1)',
+                      'rgba(63, 0, 91, 1)',
+                      'rgba(127, 0, 63, 1)',
+                      'rgba(191, 0, 31, 1)',
+                      'rgba(255, 0, 0, 1)'
                     ]
+                    heatmap.set('gradient', heatmap.get('gradient') ? null : gradient);
+                    heatmap.set('radius', heatmap.get('radius') ? null : 20);
+
+
+                  }
+                  function getPoints() {
+                    return [
+                  new google.maps.LatLng( 31.7890675,70.222832),
+                  new google.maps.LatLng( 31.7890675,70.222832),
+                  new google.maps.LatLng( 31.7890675,70.222832),
+                  new google.maps.LatLng( 31.7890675,70.222832),
+                  new google.maps.LatLng( 31.7890675,70.222832),
+                  new google.maps.LatLng( 31.7890675,70.222832),
+                  new google.maps.LatLng( 31.7890675,70.222832),
+                  new google.maps.LatLng( 31.7890675,70.222832),
+                  new google.maps.LatLng( 31.7890675,70.222832),
+                  new google.maps.LatLng( 31.7890675,70.222832),
+                  new google.maps.LatLng( 31.7890675,70.222832),
+                  new google.maps.LatLng( 31.7890675,70.222832),
+                  new google.maps.LatLng( 31.7890675,70.222832),
+                  new google.maps.LatLng( 31.7890675,70.222832),
+                  new google.maps.LatLng( 31.7890675,70.222832),
+                  new google.maps.LatLng( 34.0130809,71.5555136),
+                  new google.maps.LatLng( 34.0130809,71.5555136),
+                  new google.maps.LatLng( 34.0130809,71.5555136),
+                  new google.maps.LatLng( 34.0130809,71.5555136),
+                  new google.maps.LatLng( 34.0130809,71.5555136),
+                  new google.maps.LatLng( 34.0130809,71.5555136),
+                  new google.maps.LatLng( 34.1469887,72.0356304),
+                  new google.maps.LatLng( 34.1469887,72.0356304),
+                  new google.maps.LatLng( 34.1469887,72.0356304),
+                  new google.maps.LatLng( 34.1469887,72.0356304),
+                  new google.maps.LatLng( 34.1469887,72.0356304),
+                  new google.maps.LatLng( 31.8191332,70.8225261),
+                  new google.maps.LatLng( 34.1534752,71.7431843),
+                  new google.maps.LatLng( 34.1911539,72.0431358),
+                  new google.maps.LatLng( 34.3269282,73.1985739),
+                  new google.maps.LatLng( 33.9923876,71.4475074)
+                    ];
+                  }
                   </script>
-                  <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclustererplus@4.0.1.min.js">
+                  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDE2CjseQYhvIbEuJcf2pPU0XUSVIsxcoA&libraries=visualization&callback=initMap">
                   </script>
-                  <script async defer
-                  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyATEMJExAEqqMKOWeQdJq6DLtlDlVpJfes&callback=initMap">
-                  </script>                    <!--Map Ends Here-->
+
                 </div>
                 <div class="card-pane-right bg-success pt-2 pb-2 pl-4 pr-4">
                   <div style="margin-top: 60px;font-weight:bold;color:#fff;text-align:center;" class="description-block mb-4">
@@ -537,73 +547,61 @@
                     <span class="description-text">CORONA POSITIVE</span>
                   </div>
 
-                  <!-- /.description-block -->
                   <div style="margin-top: 10px;font-weight:bold;color:#fff;text-align:center;" class="description-block mb-4">
                     <div class="sparkbar pad" data-color="#fff"></div>
                     <h5 id="smap" class="description-header"></h5>
                     <span class="description-text">SUSPECTED</span>
                   </div>
-                  <!-- /.description-block -->
                   <div style="margin-top: 10px;font-weight:bold;color:#fff;text-align:center;" class="description-block">
                     <div class="sparkbar pad" data-color="#fff"></div>
                     <h5 id="rmap" class="description-header"></h5>
                     <span class="description-text">RECOVERED</span>
                   </div>
-                  <!-- /.description-block -->
-                </div><!-- /.card-pane-right -->
-              </div><!-- /.d-md-flex -->
+                </div>
+              </div>
             </div>
-            <!-- /.card-body -->
           </div>
-          <!-- /.card -->
-
-          <!-- TABLE: LATEST ORDERS -->
-          <!-- /.card -->
         </div>
-        <!-- /.col -->
-
         <div class="col-md-4">
-          <!-- Info Boxes Style 2 -->
-          <!-- /.info-box -->
-
           <div class="card card-warning">
             <div class="card-body">
-				          <img style="height:350px;width:100%;"src="img/1.jpg"/>
+	          <img style="height:350px;width:100%;"src="img/1.jpg"/>
           </div>
-
         </div>
       </div>
     </div>
 
-</section><!-- Portfolio end -->
-
+</section>
 <section id="main-container">
 	<div class="container">
-		<!-- Services -->
 		<div class="row">
 			<div class="col-md-12 heading">
 				<span class="title-icon classic float-left"><i class="fa fa-comments"></i></span>
-				<h2 class="title classic">Questions Answered At a Galance</h2>
+				<h2 class="title classic">Frequently Asked Questions</h2>
 			</div>
 		</div>
 
 		<div class="row">
-			<div class="col-md-6 col-sm-6">
+			<div class="col-md-6">
 				<div class="faq-box">
 					<h4>Q. What is CoronaVirus or COVID-19?</h4>
           <p>A Coronavirus, also known as COVID-19, is a virus found in animals, which can be transmitted from animals
-             to humans and then to other humans upon contact. Coronavirus belongs to a large family of viruses, some of 
+             to humans and then to other humans upon contact. Coronavirus belongs to a large family of viruses, some of
              them cause serious illnesses in animals and some in humans.</p>
         </div>
-        
+      </div>
+        <div class="col-md-6">
         <div class="faq-box">
 					<h4>Q. How is CoronaVirus or COVID-19 diagnosed?</h4>
-          <p>If you believe that you are exhibiting the said symptoms, the next step is contacting your family doctor. 
-            Call in and share your concerns so that your doctor can guide you accordingly. Next, your doctor will run 
-            some tests to eliminate other common infections. Depending on the results, your doctor might ask you to 
+          <p>If you believe that you are exhibiting the said symptoms, the next step is contacting your family doctor.
+            Call in and share your concerns so that your doctor can guide you accordingly. Next, your doctor will run
+            some tests to eliminate other common infections. Depending on the results, your doctor might ask you to
             self-isolate to prevent further spreading of the virus. Refrain from using unauthorized, fraudulent test kits for COVID-19.</p>
 				</div>
-
+      </div>
+    </div>
+    <div class="row">
+    <div class="col-md-6">
 				<div class="faq-box">
 					<h4>Q. What are the some common facts related to COVID-19?</h4>
           <p><li>Eating garlic <b>has not</b> prevented people from getting COVID-19.</li>
@@ -612,41 +610,40 @@
             <li>COVID-19 <b>can not</b> be transmitted by using goods that are manufactured in China.</li>
             <li>COVID-10 <b>can not</b> be transmitted through mosquito's bites.</li></p>
 				</div>
-
-
-			</div><!-- End col-md-6 -->
-
-			<div class="col-md-6 col-sm-6">
-
+      </div>
+      <div class="col-md-6">
 				<div class="faq-box">
 					<h4>Q. What are the symptoms of COVID-19?</h4>
-          <p>The symptoms of COVID-19 range from mild to severe, the affected will show symptoms after 2-14 days of 
+          <p>The symptoms of COVID-19 range from mild to severe, the affected will show symptoms after 2-14 days of
             getting infected. <br/>Symptoms may include: FEVER, COUGH, SHORTNESS OF BREATH.
-            <br/> Experts report that those with weak immune systems are more prone to this virus and they might experience 
+            <br/> Experts report that those with weak immune systems are more prone to this virus and they might experience
             bronchitis or pneumonia. There is also a chance of you not developing any symptoms of coronavirus even after being exposed.</p>
 				</div>
-
+      </div>
+    </div>
+    <div class="row">
+    <div class="col-md-6">
 				<div class="faq-box">
 					<h4>Q. What steps should one take to prevent or avoid the spread of COVID-19?</h4>
           <p><b>Social distancing.</b> Avoid people who are sick and large crowds.
-            <br/>If you think you are developing any symptoms, them stay home and contact your family doctor. 
+            <br/>If you think you are developing any symptoms, them stay home and contact your family doctor.
             <br/> Avoid touching your mouth, nose, and nose. Use your sleeve to cover your mouth and nose while coughing and sneezing.
             <br/> Frequently wash your hands for at least 20 seconds, especially after going to washroom, after coughing and sneezing, and before eating.
             In case water and soap are not available, sanitize your hands with sanitizer with 60% alcohol.
             <br/><b>Take these precautions and stay safe.</b></p>
 				</div>
-
+      </div>
+      <div class="col-md-6">
 				<div class="faq-box">
 					<h4>Q. What Is The treatment of COVID-19?</h4>
-          <p>Currently, there is no vaccine or any other treatment of Coronavirus; its symptoms go away on their own. 
-            Doctors might prescribe you some medicine to treat your symptoms. FDA is emphasizing to be cautious of fake 
-            websites and medical stores selling products, claiming to cure Coronavirus. Moreover, refrain from taking any 
+          <p>Currently, there is no vaccine or any other treatment of Coronavirus; its symptoms go away on their own.
+            Doctors might prescribe you some medicine to treat your symptoms. FDA is emphasizing to be cautious of fake
+            websites and medical stores selling products, claiming to cure Coronavirus. Moreover, refrain from taking any
             form of chloroquine. If you are experiencing any breathing problem, seek medical help immediately.</p>
 				</div>
-			</div><!-- End col-md-6 -->
-		</div><!-- Content row  end -->
+			</div>
+		</div>
 	</div>
-	<!--/ container end -->
 </section>
 
 
@@ -702,13 +699,10 @@
 						<p>Stay home and self-isolate from others in the household if you feel unwell</p>
 					</div>
 				</div>
-				<!--/ End 1st block -->
-
 			</div>
 		</div>
 	</div>
 </section>
-<!--/ Image block end -->
 
 
 
@@ -717,37 +711,7 @@
 
 
 
-	<!-- Footer start -->
-
-
-	<!-- Copyright start -->
-	<section id="copyright" class="copyright angle">
-	  <div class="container">
-	    <!--/ Row end -->
-	    <div class="row">
-	      <div class="col-md-12 text-center">
-          <div class="copyright-info">
-        <script>
-          document.write(new Date().getFullYear());
-        </script>
-
-        ©Copyright Government of KhyberPukhtoonKhwa, All Rights Reserved|Powered By
-          <a href="#"><img src="https://www.thecyberden.com/img/cylogo.png" width="22" height="20"></a>
-          <a href="https://www.thecyberden.com" target="_blank">The CyberDen</a>
-      </div>
-
-	      </div>
-	    </div>
-	    <!--/ Row end -->
-	    <div id="back-to-top" data-spy="affix" data-offset-top="10" class="back-to-top affix position-fixed">
-	      <button class="btn btn-primary" title="Back to Top"><i class="fa fa-angle-double-up"></i></button>
-	    </div>
-	  </div>
-	  <!--/ Container end -->
-	</section>
-	<!--/ Copyright end -->
-
-</div><!-- Body inner end -->
+	<section id="copyright" class="copyright angle"><div class="container"><div class="row"><div class="col-md-12 text-center"><div class="copyright-info"><script>document.write(new Date().getFullYear());</script>©Copyright Government of KhyberPukhtoonKhwa, All Rights Reserved | Powered By<a href="#"><img src="https://www.thecyberden.com/img/cylogo.png" width="22" height="20"></a><a href="https://www.thecyberden.com" target="_blank">The CyberDen</a></div></div></div><div id="back-to-top" data-spy="affix" data-offset-top="10" class="back-to-top affix position-fixed"><button class="btn btn-primary" title="Back to Top"><i class="fa fa-angle-double-up"></i></button></div></div></section></div>
 
 <!-- jQuery -->
 <script src="plugins/jQuery/jquery.min.js"></script>
@@ -774,8 +738,6 @@
 <script type="text/javascript" src="plugins/jquery.counterup.min.js"></script>
 <!-- Waypoints -->
 <script type="text/javascript" src="plugins/waypoints.min.js"></script>
-<!-- google map -->
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCcABaamniA6OL5YvYSpB3pFMNrXwXnLwU&libraries=places"></script>
 <script src="plugins/google-map/gmap.js"></script>
 
 <!-- Main Script -->
