@@ -68,7 +68,7 @@
 
   <!-- <script type="text/javascript">
 
-
+    
 
   </script> -->
 
@@ -101,7 +101,7 @@
 			<li class="selected">
 				<div class="overlay2">
           <a href=""></a>
-					<img class="" style="padding-top:80px;width:100%;height: auto;" src="img/header.jpg" alt="Health photo created by freepik - www.freepik.com">
+					<img class="" src="img/header.jpg" alt="Health photo created by freepik - www.freepik.com">
 				</div>
 				<div class="cd-full-width">
 					<h2 style="padding-top:55px;"  >COVID-19</h2>
@@ -232,6 +232,8 @@
                   <script>
 
                     var latat = [];
+                    var slatat = [];
+                    var dlatat = [];
 
                     function count(s) {
                         var dict = {};
@@ -315,9 +317,15 @@
 
                       const db = firebase.firestore();
                       // db.settings({ timestampsInSnapshots: true });
-
+                      
                       var lat = [];
                       var long = [];
+
+                      var slat = [];
+                      var slong = [];
+
+                      var dlat = [];
+                      var dlong = [];
 
                       db.collection('patients').get().then((snapshot) => {
                         snapshot.docs.forEach(doc => {
@@ -327,14 +335,23 @@
                             outcomes.push(doc.data().outcome);
                             Hospital.push(doc.data().hospital);
                             date.push(doc.data().dateOfTest.toDate().getFullYear().toString() + '/' + (doc.data().dateOfTest.toDate().getMonth() + 1).toString() + '/' + doc.data().dateOfTest.toDate().getDate().toString());
-                            lat.push(doc.data().location['F']);
-                            long.push(doc.data().location['V']);
+                            if (doc.data().caseStatus.toLowerCase().includes("confirm")){
+                              lat.push(doc.data().location['F']);
+                              long.push(doc.data().location['V']);
+                            }
+                            if (doc.data().caseStatus.toLowerCase().includes("suspect")) {
+                              slat.push(doc.data().location['F']);
+                              slong.push(doc.data().location['V']);
+                            }
+                            if (doc.data().outcome.toLowerCase().includes("dead") || doc.data().outcome.toLowerCase().includes("death")) {
+                              dlat.push(doc.data().location['F']);
+                              dlong.push(doc.data().location['V']);
+                            }
                           }
                           catch{
                             console.log("Error in entry of this patient: " + doc.data().name);
                           }
                         });
-
 
                         dic = {};
 
@@ -342,6 +359,18 @@
                           dic['lat'] = lat[i];
                           dic['lng'] = long[i];
                           window.latat.push(dic);
+                        }
+
+                        for (var i = 0; i < slat.length; i++) {
+                          dic['lat'] = slat[i];
+                          dic['lng'] = slong[i];
+                          window.slatat.push(dic);
+                        }
+
+                        for (var i = 0; i < dlat.length; i++) {
+                          dic['lat'] = dlat[i];
+                          dic['lng'] = dlong[i];
+                          window.dlatat.push(dic);
                         }
 
                         var hosCount = count(Hospital);
@@ -453,19 +482,28 @@
                           }]
                         });
                         chart.render();
+
                         if (latat != null) {
                           var map = new google.maps.Map(document.getElementById('map'), {
                             zoom: 6,
-                            center: { lat: 31.7890675, lng: 70.222832 }
+                            center: { lat: 31.7890675, lng: 70.222832 },
+                            
                           });
+                          
                           for (loc of latat) {
-                            var marker = new google.maps.Marker({ position: loc, map: map });
+                            var marker = new google.maps.Marker({ position: loc, map: map, label: "C" });
                           }
-                          var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                          
+                          for (loc of slatat) {
+                            var marker = new google.maps.Marker({ position: loc, map: map, label: "S" });
+                          }
+                          
+                          for (loc of dlatat) {
+                            var marker = new google.maps.Marker({ position: loc, map: map, label: "D" });
+                          }
                           var markers = latat.map(function (location, i) {
                             return new google.maps.Marker({
-                              position: location,
-                              label: Hospital[i % labels.length]
+                              position: location
                             });
                           });
                           var markerCluster = new MarkerClusterer(map, markers,
